@@ -19,4 +19,8 @@ public class CreditCardService {
     public void insert(CreditCard card) {
         creditCardRepository.save(card);
     }
+
+    public Boolean validate(Long crNumber) {
+        return creditCardRepository.existsByCrNumber(crNumber);
+    }
 }

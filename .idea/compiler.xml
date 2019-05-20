@@ -12,6 +12,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="final-backend" target="1.8" />
+      <module name="final-servlet" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

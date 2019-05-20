@@ -32,4 +32,10 @@ public class CreditCardController {
         creditCardService.insert(card);
         return card;
     }
+
+    @GetMapping(value = "/validate/{crNumber}")
+    @CrossOrigin
+    public Boolean validateCard(@PathVariable("crNumber") Long crNumber) {
+        return creditCardService.validate(crNumber);
+    }
 }
