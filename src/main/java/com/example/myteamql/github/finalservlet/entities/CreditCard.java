@@ -14,7 +14,6 @@ import javax.persistence.Id;
 public class CreditCard {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long crNumber;
 
 }
