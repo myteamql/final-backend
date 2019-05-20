@@ -36,6 +36,7 @@ public class CreditCardController {
     @GetMapping(value = "/validate/{crNumber}")
     @CrossOrigin
     public Boolean validateCard(@PathVariable("crNumber") Long crNumber) {
-        return creditCardService.validate(crNumber);
+        Boolean cardIsValid = creditCardService.validate(crNumber);
+        return cardIsValid;
     }
 }
