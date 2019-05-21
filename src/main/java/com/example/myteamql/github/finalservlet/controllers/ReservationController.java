@@ -41,12 +41,10 @@ public class ReservationController {
         return reservation;
     }
 
-    @PutMapping(value = "/reservation")
+    @PutMapping(value = "/reservation/{code}")
     @CrossOrigin
-    public Reservation cancelReservation(@RequestBody Reservation reservation) {
-        reservation.setCanceled(false);
-        reservationService.cancel(reservation);
-        return reservation;
+    public void cancelReservation(@PathVariable("code") int code) {
+        reservationService.cancel(code);
     }
 
 }

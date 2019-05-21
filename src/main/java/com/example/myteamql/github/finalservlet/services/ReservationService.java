@@ -19,7 +19,9 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
 
-    public void cancel(Reservation reservation) {
+    public void cancel(int code) {
+        Reservation reservation = findReservationByCode(code);
+        reservation.setCanceled(true);
         reservationRepository.save(reservation);
     }
 
