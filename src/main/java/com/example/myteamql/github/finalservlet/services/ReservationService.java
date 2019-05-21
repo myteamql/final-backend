@@ -19,5 +19,9 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
 
+    public void cancel(Reservation reservation) {
+        reservationRepository.save(reservation);
+    }
+
 
 }
