@@ -15,5 +15,5 @@ public class Payment {
     private int reservationCode;
 
     private Long crNumber;
-    private Long charged;
+    private Double charged;
 }
