@@ -82,8 +82,7 @@ public class RoomService {
                     + "JOIN " + getAllRoomsByDecorQuery(decor) + " ON r.room_number=r1.room_number "
                     + "JOIN " + getAllRoomsByMaxOccupantsQuery(occupants) + " ON r.room_number=r2.room_number "
                     + "JOIN " + getAllRoomsByTypeQuery(type) +" ON r.room_number=r3.room_number "
-            //+ "JOIN " + getAllRoomsByPriceRangeQuery(price_floor, price_ceiling) +" r4 ON r.room_number=r4.room_number"
-            ;
+                    + "JOIN " + getAllRoomsByPriceRangeQuery(price_floor, price_ceiling) +" ON r.room_number=r4.room_number";
             preparedStatement = conn.prepareStatement(preparedString);
             int i = 1;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -137,10 +136,9 @@ public class RoomService {
 
     private String getAllRoomsByPriceRangeQuery(float price_floor, float price_ceiling) {
         if (price_floor == -1 || price_ceiling == -1) {
-            return "(SELECT * FROM room) q1";
+            return "(SELECT * FROM room) r4";
         } else {
-            return "((SELECT distinct r.room_number FROM reservation re JOIN room r ON room_number=room " +
-                    "WHERE re.check_in between (?)  AND (?) OR re.check_out between (?)  AND (?))) q1";
+            return "(SELECT * FROM room WHERE price BETWEEN (?) AND (?)) r4";
         }
     }
     private String getAllRoomsByMaxOccupantsQuery(int occupants) {
