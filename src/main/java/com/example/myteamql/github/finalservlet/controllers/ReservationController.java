@@ -2,9 +2,12 @@ package com.example.myteamql.github.finalservlet.controllers;
 
 import com.example.myteamql.github.finalservlet.entities.Payment;
 import com.example.myteamql.github.finalservlet.entities.Reservation;
+import com.example.myteamql.github.finalservlet.entities.Room;
 import com.example.myteamql.github.finalservlet.services.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class ReservationController {
@@ -20,6 +23,13 @@ public class ReservationController {
     @CrossOrigin
     public Reservation getReservation(@PathVariable("code") int code) {
         return reservationService.findReservationByCode(code);
+    }
+
+    @GetMapping(value = "/reservations")
+    @CrossOrigin
+    public List<Reservation> reservations() {
+        List<Reservation> reservations = reservationService.getAllReservations();
+        return reservations;
     }
 
     @PostMapping(value = "/reservation")

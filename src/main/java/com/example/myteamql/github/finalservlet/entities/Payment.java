@@ -14,6 +14,8 @@ public class Payment {
     @Id
     private int reservationCode;
 
+    private String first;
+    private String last;
     private Long crNumber;
     private Double charged;
 }
