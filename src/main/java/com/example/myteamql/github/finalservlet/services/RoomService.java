@@ -76,7 +76,7 @@ public class RoomService {
         return rooms;
     }
 
-    public List<Room> getRooms(Date checkin, Date checkout, int occupants, String type,
+    /*public List<Room> getRooms(Date checkin, Date checkout, int occupants, String type,
                                String decor, float price_floor, float price_ceiling) {
 
         PreparedStatement preparedStatement = null;
@@ -93,9 +93,7 @@ public class RoomService {
             + "JOIN (?) r4 ON r.room_number=r4.roomnumber");
             //preparedStatement = conn.prepareStatement("describe room");
             resultSet = preparedStatement.executeQuery();
-            /*while(resultSet.next()){
-                System.out.println(resultSet.getString(1));
-            }*/
+
 
             rooms = unpackResultSet(resultSet);
         }
@@ -117,7 +115,7 @@ public class RoomService {
 
     public String getAllRoomsByAvailabilityQuery(Date checkin, Date checkout) {
         return ""
-    }
+    }*/
 
     private List<Room> unpackResultSet(ResultSet rs) throws SQLException {
         List<Room> rooms = new ArrayList<Room>();

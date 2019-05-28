@@ -56,7 +56,7 @@ public class RoomController {
         return rooms;
     }
 
-    @GetMapping(value = "/rooms/{checkin}/{checkout}/{occupants}/{type}/{decor}/{price_floor}/{price_ceiling}")
+    /*@GetMapping(value = "/rooms/{checkin}/{checkout}/{occupants}/{type}/{decor}/{price_floor}/{price_ceiling}")
     @CrossOrigin
     public List<Room> searchRooms(@PathVariable("checkin") Date checkin, @PathVariable("checkout") Date checkout,
                                   @PathVariable("occupants") int occupants, @PathVariable("type") String type,
@@ -64,6 +64,6 @@ public class RoomController {
                                   @PathVariable("price_ceiling") float price_ceiling) {
         List<Room> rooms = roomService.getRooms(checkin, checkout, occupants, type, decor, price_floor, price_ceiling);
         return rooms;
-    }
+    }*/
 
 }
