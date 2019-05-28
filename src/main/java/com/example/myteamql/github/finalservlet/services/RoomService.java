@@ -5,6 +5,8 @@ import com.example.myteamql.github.finalservlet.repositories.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -36,15 +38,12 @@ public class RoomService {
     }
 
     public List<Room> getAllRoomsByAvailability(Date checkin, Date checkout) {
-
         PreparedStatement preparedStatement = null;
         List<Room> rooms = null;
         ResultSet resultSet = null;
         try{
             Connection conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
                     "sec03group01", "group01@sec03");
-            boolean reachable = conn.isValid(5);
-            System.out.println(reachable);
             preparedStatement = conn.prepareStatement("SELECT * FROM room r WHERE r.room_number NOT IN " +
                     "(SELECT distinct r.room_number FROM reservation re JOIN room r ON room_number=room " +
                     "WHERE re.check_in between (?)  AND (?) OR re.check_out between (?)  AND (?))");
@@ -52,12 +51,8 @@ public class RoomService {
             preparedStatement.setDate(2, checkout);
             preparedStatement.setDate(3, checkin);
             preparedStatement.setDate(4, checkout);
-            //preparedStatement = conn.prepareStatement("describe room");
-            resultSet = preparedStatement.executeQuery();
-            /*while(resultSet.next()){
-                System.out.println(resultSet.getString(1));
-            }*/
 
+            resultSet = preparedStatement.executeQuery();
             rooms = unpackResultSet(resultSet);
         }
         catch (Exception e){
@@ -72,29 +67,56 @@ public class RoomService {
                 e.printStackTrace();
             }
         }
-
         return rooms;
     }
 
-    /*public List<Room> getRooms(Date checkin, Date checkout, int occupants, String type,
+    public List<Room> getRooms(Date checkin, Date checkout, int occupants, String type,
                                String decor, float price_floor, float price_ceiling) {
-
         PreparedStatement preparedStatement = null;
         List<Room> rooms = null;
         ResultSet resultSet = null;
         try{
             Connection conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
                     "sec03group01", "group01@sec03");
-            boolean reachable = conn.isValid(5);
-            System.out.println(reachable);
-            preparedStatement = conn.prepareStatement("SELECT * FROM " + getAllRoomsByAvailability(checkin, checkout)
-                    +" r JOIN " + getAllRoomsByDecor(decor) + " r1 ON r.room_number=r1.room_number "
-            + "JOIN " + getAllRoomsByMaxOccupants(occupants) + " r2 ON r.room_number=r2.room_number JOIN (?) r3 ON r.room_number=r3.room_number "
-            + "JOIN (?) r4 ON r.room_number=r4.roomnumber");
-            //preparedStatement = conn.prepareStatement("describe room");
+            String preparedString = "SELECT * FROM " + getAllRoomsByAvailabilityQuery(checkin, checkout)
+                    + "JOIN " + getAllRoomsByDecorQuery(decor) + " ON r.room_number=r1.room_number "
+                    + "JOIN " + getAllRoomsByMaxOccupantsQuery(occupants) + " ON r.room_number=r2.room_number "
+                    + "JOIN " + getAllRoomsByTypeQuery(type) +" ON r.room_number=r3.room_number "
+            //+ "JOIN " + getAllRoomsByPriceRangeQuery(price_floor, price_ceiling) +" r4 ON r.room_number=r4.room_number"
+            ;
+            preparedStatement = conn.prepareStatement(preparedString);
+            int i = 1;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            if (!checkin.equals(sdf.parse("0001-01-01")) && !checkout.equals(sdf.parse("0001-01-01"))) {
+                preparedStatement.setDate(i, checkin);
+                i++;
+                preparedStatement.setDate(i, checkout);
+                i++;
+                preparedStatement.setDate(i, checkin);
+                i++;
+                preparedStatement.setDate(i, checkout);
+                i++;
+            }
+            if (!decor.equals("null")) {
+                preparedStatement.setString(i, decor);
+                i++;
+            }
+            if (occupants != -1) {
+                preparedStatement.setInt(i, occupants);
+                i++;
+            }
+            if (!type.equals("null")) {
+                preparedStatement.setString(i, type);
+                i++;
+            }
+            if (price_floor != -1 && price_ceiling != -1) {
+                preparedStatement.setFloat(i, price_floor);
+                i++;
+                preparedStatement.setFloat(i, price_ceiling);
+                i++;
+            }
+
             resultSet = preparedStatement.executeQuery();
-
-
             rooms = unpackResultSet(resultSet);
         }
         catch (Exception e){
@@ -113,13 +135,51 @@ public class RoomService {
         return rooms;
     }
 
-    public String getAllRoomsByAvailabilityQuery(Date checkin, Date checkout) {
-        return ""
-    }*/
+    private String getAllRoomsByPriceRangeQuery(float price_floor, float price_ceiling) {
+        if (price_floor == -1 || price_ceiling == -1) {
+            return "(SELECT * FROM room) q1";
+        } else {
+            return "((SELECT distinct r.room_number FROM reservation re JOIN room r ON room_number=room " +
+                    "WHERE re.check_in between (?)  AND (?) OR re.check_out between (?)  AND (?))) q1";
+        }
+    }
+    private String getAllRoomsByMaxOccupantsQuery(int occupants) {
+        if (occupants == -1) {
+            return "(SELECT * FROM room) r2 ";
+        } else {
+            return "(SELECT * FROM room WHERE max_occupants >= ?) r2 ";
+        }
+    }
+
+    private String getAllRoomsByTypeQuery(String type) {
+        if (type.equals("null")) {
+            return "(SELECT * FROM room) r3 ";
+        } else {
+            return "(SELECT * FROM room WHERE type = ?) r3 ";
+        }
+    }
+
+    private String getAllRoomsByDecorQuery(String decor) {
+        if (decor.equals("null")) {
+            return "(SELECT * FROM room) r1 ";
+        } else {
+            return "(SELECT * FROM room WHERE decor = ?) r1 ";
+        }
+    }
+
+    private String getAllRoomsByAvailabilityQuery(Date checkin, Date checkout) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        if (checkin.equals(sdf.parse("0001-01-01")) || checkout.equals(sdf.parse("0001-01-01"))) {
+            return "(SELECT * FROM room) r ";
+        } else {
+            return "(SELECT * FROM room r WHERE r.room_number NOT IN " +
+                    "(SELECT distinct r.room_number FROM reservation re JOIN room r ON room_number=room " +
+                    "WHERE re.check_in between (?)  AND (?) OR re.check_out between (?)  AND (?))) r ";
+        }
+    }
 
     private List<Room> unpackResultSet(ResultSet rs) throws SQLException {
-        List<Room> rooms = new ArrayList<Room>();
-
+        List<Room> rooms = new ArrayList<>();
         while(rs.next()) {
             Room room = new Room(
                     rs.getInt("room_number"),
@@ -129,10 +189,12 @@ public class RoomService {
                     rs.getFloat("price"),
                     rs.getInt("beds"),
                     rs.getFloat("length"),
-                    rs.getFloat("popularity"));
+                    rs.getFloat("popularity"),
+                    rs.getString("pictureurl"));
 
             rooms.add(room);
         }
         return rooms;
     }
+
 }
