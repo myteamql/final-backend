@@ -4,6 +4,7 @@ import com.example.myteamql.github.finalservlet.entities.Room;
 import com.example.myteamql.github.finalservlet.services.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import java.sql.Date;
 
 import java.util.List;
 
@@ -46,6 +47,23 @@ public class RoomController {
     public Room createRoom(@RequestBody Room room) {
         roomService.insert(room);
         return room;
+    }
+
+    @GetMapping(value = "/roomavailable/{checkin}/{checkout}")
+    @CrossOrigin
+    public List<Room> searchRoomsByAvailability(@PathVariable("checkin") Date checkin, @PathVariable("checkout") Date checkout) {
+        List<Room> rooms = roomService.getAllRoomsByAvailability(checkin, checkout);
+        return rooms;
+    }
+
+    @GetMapping(value = "/rooms/{checkin}/{checkout}/{occupants}/{type}/{decor}/{price_floor}/{price_ceiling}")
+    @CrossOrigin
+    public List<Room> searchRooms(@PathVariable("checkin") Date checkin, @PathVariable("checkout") Date checkout,
+                                  @PathVariable("occupants") int occupants, @PathVariable("type") String type,
+                                  @PathVariable("decor") String decor, @PathVariable("price_floor") float price_floor,
+                                  @PathVariable("price_ceiling") float price_ceiling) {
+        List<Room> rooms = roomService.getRooms(checkin, checkout, occupants, type, decor, price_floor, price_ceiling);
+        return rooms;
     }
 
 }

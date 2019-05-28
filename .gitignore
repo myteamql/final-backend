@@ -5,6 +5,7 @@
 .idea/**/dictionaries
 .idea/**/shelf
 *.iml
+target/
 
 # Generated files
 .idea/**/contentModel.xml

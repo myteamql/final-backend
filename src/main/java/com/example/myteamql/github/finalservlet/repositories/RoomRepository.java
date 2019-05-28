@@ -10,5 +10,5 @@ import java.util.List;
 public interface RoomRepository extends JpaRepository<Room, Integer> {
     List<Room> findAllByTypeEquals(String type);
     List<Room> findAllByDecorEquals(String decor);
-    List<Room> findAllByMaxOccupantsGreaterThan(int occupants);
+    List<Room> findAllByMaxOccupantsGreaterThanEqual(int occupants);
 }

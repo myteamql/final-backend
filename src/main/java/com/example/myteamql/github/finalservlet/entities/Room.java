@@ -10,7 +10,6 @@ import javax.persistence.Id;
 
 @Data
 @Entity
-@NoArgsConstructor
 public class Room {
 
     @Id
@@ -24,4 +23,19 @@ public class Room {
     private int beds;
     private float length;
     private float popularity;
+
+    public Room(int roomNumber, int maxOccupants, String type, String decor, float price, int beds, float length, float popularity) {
+        this.roomNumber = roomNumber;
+        this.maxOccupants = maxOccupants;
+        this.type = type;
+        this.decor = decor;
+        this.price = price;
+        this.beds = beds;
+        this.length = length;
+        this.popularity = popularity;
+    }
+
+    public Room(){
+
+    }
 }

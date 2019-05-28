@@ -4,6 +4,7 @@ import com.example.myteamql.github.finalservlet.entities.Reservation;
 import com.example.myteamql.github.finalservlet.repositories.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class ReservationService {
@@ -25,5 +26,7 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
 
-
+    public List<Reservation> getAllReservations() {
+        return reservationRepository.findAll();
+    }
 }
