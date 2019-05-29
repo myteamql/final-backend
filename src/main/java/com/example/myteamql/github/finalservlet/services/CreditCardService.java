@@ -20,7 +20,7 @@ public class CreditCardService {
         creditCardRepository.save(card);
     }
 
-    public Boolean validate(Long crNumber) {
-        return creditCardRepository.existsByCrNumber(crNumber);
+    public Boolean validate(Long crNumber, String first, String last) {
+        return creditCardRepository.existsByCrNumberAndAndFirstAndLast(crNumber, first, last);
     }
 }
