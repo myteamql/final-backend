@@ -8,6 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.TimeZone;
+import java.time.*;
+import java.sql.*;
+import java.text.SimpleDateFormat;
 
 @RestController
 public class ReservationController {
@@ -34,7 +38,8 @@ public class ReservationController {
 
     @PostMapping(value = "/reservation")
     @CrossOrigin
-    public Reservation createReservation(@RequestBody Reservation reservation) {
+    public Reservation createReservation(@RequestBody Reservation reservation) throws Exception{
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
         if (creditCardController.validateCard(reservation.getCrNumber(), reservation.getFirstName(), reservation.getLastName())) {
             reservationService.insert(reservation);
             Payment newPayment = new Payment();
