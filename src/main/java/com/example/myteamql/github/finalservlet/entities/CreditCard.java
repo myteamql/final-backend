@@ -16,4 +16,7 @@ public class CreditCard {
     @Id
     private Long crNumber;
 
+    private String first;
+    private String last;
+
 }

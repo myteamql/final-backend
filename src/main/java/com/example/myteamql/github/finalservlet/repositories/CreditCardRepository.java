@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CreditCardRepository extends JpaRepository<CreditCard, Long> {
-    Boolean existsByCrNumber(Long crNumber);
+    Boolean existsByCrNumberAndAndFirstAndLast(Long crNumber, String first, String last);
 }

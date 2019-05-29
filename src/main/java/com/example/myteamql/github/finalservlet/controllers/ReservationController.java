@@ -35,7 +35,7 @@ public class ReservationController {
     @PostMapping(value = "/reservation")
     @CrossOrigin
     public Reservation createReservation(@RequestBody Reservation reservation) {
-        if (creditCardController.validateCard(reservation.getCrNumber())) {
+        if (creditCardController.validateCard(reservation.getCrNumber(), reservation.getFirstName(), reservation.getLastName())) {
             reservationService.insert(reservation);
             Payment newPayment = new Payment();
             Long checkIn = reservation.getCheckIn().getTime();

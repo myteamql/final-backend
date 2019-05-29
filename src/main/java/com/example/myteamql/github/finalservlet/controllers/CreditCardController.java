@@ -33,10 +33,12 @@ public class CreditCardController {
         return card;
     }
 
-    @GetMapping(value = "/validate/{crNumber}")
+    @GetMapping(value = "/validate/{crNumber}/{first}/{last}")
     @CrossOrigin
-    public Boolean validateCard(@PathVariable("crNumber") Long crNumber) {
-        Boolean cardIsValid = creditCardService.validate(crNumber);
+    public Boolean validateCard(@PathVariable("crNumber") Long crNumber,
+                                @PathVariable("first") String first,
+                                @PathVariable("last") String last) {
+        Boolean cardIsValid = creditCardService.validate(crNumber, first, last);
         return cardIsValid;
     }
 }
