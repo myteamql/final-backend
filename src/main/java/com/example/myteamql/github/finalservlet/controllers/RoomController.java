@@ -45,6 +45,7 @@ public class RoomController {
     @PostMapping(value = "/room")
     @CrossOrigin
     public Room createRoom(@RequestBody Room room) {
+        room.setPopularity(0);
         roomService.insert(room);
         return room;
     }

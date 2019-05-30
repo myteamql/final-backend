@@ -40,4 +40,9 @@ public class Room {
     public Room(){
 
     }
+
+    public Room(int roomNumber, float popularity){
+        this.roomNumber=roomNumber;
+        this.popularity=popularity;
+    }
 }

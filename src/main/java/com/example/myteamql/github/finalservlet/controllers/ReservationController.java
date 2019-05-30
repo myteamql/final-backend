@@ -51,6 +51,7 @@ public class ReservationController {
 
             paymentController.pay(newPayment);
         } else {
+            System.out.println("Not a valid credit card.");
             /* not a valid credit card */
         }
         return reservation;
