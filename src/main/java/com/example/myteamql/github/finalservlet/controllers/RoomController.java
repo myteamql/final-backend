@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.sql.Date;
 
+import java.util.Calendar;
 import java.util.List;
 
 @RestController
@@ -46,6 +47,10 @@ public class RoomController {
     @CrossOrigin
     public Room createRoom(@RequestBody Room room) {
         room.setPopularity(0);
+        Calendar calendar = Calendar.getInstance();
+        java.util.Date currentDate = calendar.getTime();
+        java.sql.Date date = new java.sql.Date(currentDate.getTime());
+        room.setNextAvailable(date);
         roomService.insert(room);
         return room;
     }

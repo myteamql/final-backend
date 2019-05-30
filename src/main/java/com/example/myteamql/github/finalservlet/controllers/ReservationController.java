@@ -4,6 +4,7 @@ import com.example.myteamql.github.finalservlet.entities.Payment;
 import com.example.myteamql.github.finalservlet.entities.Reservation;
 import com.example.myteamql.github.finalservlet.entities.Room;
 import com.example.myteamql.github.finalservlet.services.ReservationService;
+import com.example.myteamql.github.finalservlet.services.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,8 @@ public class ReservationController {
     private CreditCardController creditCardController;
     @Autowired
     private PaymentController paymentController;
+    @Autowired
+    private RoomService roomService;
 
     @GetMapping(value = "/reservation/{code}")
     @CrossOrigin
@@ -41,14 +44,17 @@ public class ReservationController {
         reservation.setFirstName(reservation.getFirstName().toLowerCase());
         reservation.setLastName(reservation.getLastName().toLowerCase());
         if (creditCardController.validateCard(reservation.getCrNumber(), reservation.getFirstName(), reservation.getLastName())) {
+            reservation.setCanceled(false);
+            Room room = roomService.getRoomByRoomNumber(reservation.getRoom());
             if (reservationService.insert(reservation)) {
                 Payment newPayment = new Payment();
                 Long checkIn = reservation.getCheckIn().getTime();
                 Long checkOut = reservation.getCheckOut().getTime();
-                newPayment.setCharged(((checkOut - checkIn) / 86400000.0 * reservation.getRate()));
+                newPayment.setCharged(((checkOut - checkIn) / 86400000.0 * room.getPrice()));
                 newPayment.setReservationCode(reservation.getCode());
                 newPayment.setCrNumber(reservation.getCrNumber());
                 paymentController.pay(newPayment);
+                reservationService.changeNextAvailable(reservation.getRoom());
                 return reservation;
             }
         } else {

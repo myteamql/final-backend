@@ -50,7 +50,7 @@ public class RoomService {
                     "sec03group01", "group01@sec03");
             preparedStatement = conn.prepareStatement("SELECT * FROM room r WHERE r.room_number NOT IN " +
                     "(SELECT distinct r.room_number FROM reservation re JOIN room r ON room_number=room " +
-                    "WHERE re.check_in between (?)  AND (?) OR re.check_out between (?)  AND (?))");
+                    "WHERE (re.check_in > (?)  AND re.check_in <= (?)) OR (re.check_out > (?)  AND re.check_out <= (?)))");
             preparedStatement.setDate(1, checkin);
             preparedStatement.setDate(2, checkout);
             preparedStatement.setDate(3, checkin);
@@ -238,7 +238,8 @@ public class RoomService {
                     rs.getInt("beds"),
                     rs.getFloat("length"),
                     rs.getFloat("popularity"),
-                    rs.getString("pictureurl"));
+                    rs.getString("pictureurl"),
+                    rs.getDate("next_available"));
 
             rooms.add(room);
         }
