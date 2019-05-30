@@ -7,11 +7,9 @@ import com.example.myteamql.github.finalservlet.services.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.TimeZone;
-import java.time.*;
-import java.sql.*;
-import java.text.SimpleDateFormat;
 
 @RestController
 public class ReservationController {
@@ -38,23 +36,26 @@ public class ReservationController {
 
     @PostMapping(value = "/reservation")
     @CrossOrigin
-    public Reservation createReservation(@RequestBody Reservation reservation) throws Exception{
+    public Reservation createReservation(@RequestBody Reservation reservation) throws ParseException {
         TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+        reservation.setFirstName(reservation.getFirstName().toLowerCase());
+        reservation.setLastName(reservation.getLastName().toLowerCase());
         if (creditCardController.validateCard(reservation.getCrNumber(), reservation.getFirstName(), reservation.getLastName())) {
-            reservationService.insert(reservation);
-            Payment newPayment = new Payment();
-            Long checkIn = reservation.getCheckIn().getTime();
-            Long checkOut = reservation.getCheckOut().getTime();
-            newPayment.setCharged(((checkOut - checkIn) / 86400000.0 * reservation.getRate()));
-            newPayment.setReservationCode(reservation.getCode());
-            newPayment.setCrNumber(reservation.getCrNumber());
-
-            paymentController.pay(newPayment);
+            if (reservationService.insert(reservation)) {
+                Payment newPayment = new Payment();
+                Long checkIn = reservation.getCheckIn().getTime();
+                Long checkOut = reservation.getCheckOut().getTime();
+                newPayment.setCharged(((checkOut - checkIn) / 86400000.0 * reservation.getRate()));
+                newPayment.setReservationCode(reservation.getCode());
+                newPayment.setCrNumber(reservation.getCrNumber());
+                paymentController.pay(newPayment);
+                return reservation;
+            }
         } else {
             System.out.println("Not a valid credit card.");
             /* not a valid credit card */
         }
-        return reservation;
+        return null;
     }
 
     @PutMapping(value = "/reservation/{code}")
