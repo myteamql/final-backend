@@ -24,14 +24,14 @@ public class RoomController {
     @GetMapping(value = "/roomtype/{type}")
     @CrossOrigin
     public List<Room> searchRoomsByType(@PathVariable("type") String type) {
-        List<Room> rooms = roomService.getAllRoomsByType(type);
+        List<Room> rooms = roomService.getAllRoomsByType(type.toLowerCase());
         return rooms;
     }
 
     @GetMapping(value = "/roomdecor/{decor}")
     @CrossOrigin
     public List<Room> searchRoomsByDecor(@PathVariable("decor") String decor) {
-        List<Room> rooms = roomService.getAllRoomsByDecor(decor);
+        List<Room> rooms = roomService.getAllRoomsByDecor(decor.toLowerCase());
         return rooms;
     }
 
@@ -63,7 +63,7 @@ public class RoomController {
                                   @PathVariable("occupants") int occupants, @PathVariable("type") String type,
                                   @PathVariable("decor") String decor, @PathVariable("price_floor") float price_floor,
                                   @PathVariable("price_ceiling") float price_ceiling) {
-        List<Room> rooms = roomService.getRooms(checkin, checkout, occupants, type, decor, price_floor, price_ceiling);
+        List<Room> rooms = roomService.getRooms(checkin, checkout, occupants, type.toLowerCase(), decor.toLowerCase(), price_floor, price_ceiling);
         return rooms;
     }
 

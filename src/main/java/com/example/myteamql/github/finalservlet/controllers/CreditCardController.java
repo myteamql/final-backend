@@ -29,6 +29,8 @@ public class CreditCardController {
     @PostMapping(value = "/creditcard")
     @CrossOrigin
     public CreditCard saveCard(@RequestBody CreditCard card) {
+        card.setFirst(card.getFirst().toLowerCase());
+        card.setLast(card.getLast().toLowerCase());
         creditCardService.insert(card);
         return card;
     }
@@ -38,7 +40,7 @@ public class CreditCardController {
     public Boolean validateCard(@PathVariable("crNumber") Long crNumber,
                                 @PathVariable("first") String first,
                                 @PathVariable("last") String last) {
-        Boolean cardIsValid = creditCardService.validate(crNumber, first, last);
+        Boolean cardIsValid = creditCardService.validate(crNumber, first.toLowerCase(), last.toLowerCase());
         return cardIsValid;
     }
 }
