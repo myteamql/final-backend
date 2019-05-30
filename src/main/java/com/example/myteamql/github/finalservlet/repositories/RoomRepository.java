@@ -11,4 +11,5 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
     List<Room> findAllByTypeEquals(String type);
     List<Room> findAllByDecorEquals(String decor);
     List<Room> findAllByMaxOccupantsGreaterThanEqual(int occupants);
+    Room getRoomByRoomNumber(int room_number);
 }

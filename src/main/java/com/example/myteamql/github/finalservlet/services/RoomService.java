@@ -33,6 +33,10 @@ public class RoomService {
         return roomRepository.findAllByMaxOccupantsGreaterThanEqual(occupants);
     }
 
+    public Room getRoomByRoomNumber(int room_number){
+        return roomRepository.getRoomByRoomNumber(room_number);
+    }
+
     public void insert(Room room) {
         roomRepository.save(room);
     }
@@ -78,6 +82,14 @@ public class RoomService {
         try{
             Connection conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
                     "sec03group01", "group01@sec03");
+
+            List<Room> rooms_pop = getPopularityScore(conn);
+            for(Room r : rooms_pop){
+                Room room = getRoomByRoomNumber(r.getRoomNumber());
+                room.setPopularity(r.getPopularity());
+                insert(room);
+            }
+
             String preparedString = "SELECT * FROM " + getAllRoomsByAvailabilityQuery(checkin, checkout)
                     + "JOIN " + getAllRoomsByDecorQuery(decor) + " ON r.room_number=r1.room_number "
                     + "JOIN " + getAllRoomsByMaxOccupantsQuery(occupants) + " ON r.room_number=r2.room_number "
@@ -117,6 +129,7 @@ public class RoomService {
 
             resultSet = preparedStatement.executeQuery();
             rooms = unpackResultSet(resultSet);
+
         }
         catch (Exception e){
             System.out.println(e.getMessage());
@@ -131,6 +144,43 @@ public class RoomService {
             }
         }
 
+
+
+        return rooms;
+    }
+
+    private List<Room> getPopularityScore(Connection conn){
+        PreparedStatement preparedStatement = null;
+        List<Room> rooms = null;
+        ResultSet resultSet = null;
+        try{
+            String preparedString = "SELECT room, ROUND((SUM(DATEDIFF(check_out, check_in) " +
+                    "- GREATEST(DATEDIFF(DATE_SUB(CURDATE(), INTERVAL 180 DAY), check_in), 0)))/180,2) as pop " +
+                    "FROM room  "+
+                    "JOIN reservation " +
+                    "ON room=room_number " +
+                    "WHERE DATEDIFF(CURDATE(), check_out)<=180 " +
+                    "GROUP BY room";
+            //String preparedString = "describe room";
+            preparedStatement = conn.prepareStatement(preparedString);
+
+            resultSet = preparedStatement.executeQuery();
+            rooms = unpackResultSetPopularity(resultSet);
+
+
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        finally{
+            try {
+                resultSet.close();
+                preparedStatement.close();
+            }catch(SQLException e){
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }
         return rooms;
     }
 
@@ -189,6 +239,19 @@ public class RoomService {
                     rs.getFloat("length"),
                     rs.getFloat("popularity"),
                     rs.getString("pictureurl"));
+
+            rooms.add(room);
+        }
+        return rooms;
+    }
+
+    private List<Room> unpackResultSetPopularity(ResultSet rs) throws SQLException {
+        List<Room> rooms = new ArrayList<>();
+        while(rs.next()) {
+            Room room = new Room(
+                    rs.getInt("room"),
+                    rs.getFloat("pop"));
+
 
             rooms.add(room);
         }
