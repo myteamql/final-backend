@@ -49,7 +49,7 @@ public class RoomService {
             Connection conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
                     "sec03group01", "group01@sec03");
             preparedStatement = conn.prepareStatement("SELECT * FROM room r WHERE r.room_number NOT IN " +
-                    "(SELECT distinct r.room_number FROM reservation re JOIN room r ON room_number=room " +
+                    "(SELECT distinct r.room_number FROM reservation re JOIN room r ON room_number=room AND canceled=false " +
                     "WHERE (re.check_in > (?)  AND re.check_in <= (?)) OR (re.check_out > (?)  AND re.check_out <= (?)))");
             preparedStatement.setDate(1, checkin);
             preparedStatement.setDate(2, checkout);
@@ -186,9 +186,9 @@ public class RoomService {
 
     private String getAllRoomsByPriceRangeQuery(float price_floor, float price_ceiling) {
         if (price_floor == -1 || price_ceiling == -1) {
-            return "(SELECT * FROM room) r4";
+            return "(SELECT * FROM room) r4 ";
         } else {
-            return "(SELECT * FROM room WHERE price BETWEEN (?) AND (?)) r4";
+            return "(SELECT * FROM room WHERE price BETWEEN (?) AND (?)) r4 ";
         }
     }
     private String getAllRoomsByMaxOccupantsQuery(int occupants) {
@@ -221,8 +221,8 @@ public class RoomService {
             return "(SELECT * FROM room) r ";
         } else {
             return "(SELECT * FROM room r WHERE r.room_number NOT IN " +
-                    "(SELECT distinct r.room_number FROM reservation re JOIN room r ON room_number=room " +
-                    "WHERE re.check_in between (?)  AND (?) OR re.check_out between (?)  AND (?))) r ";
+                    "(SELECT distinct r.room_number FROM reservation re JOIN room r ON room_number=room AND canceled=false " +
+                    "WHERE (re.check_in > (?) AND re.check_in <= (?)) OR (re.check_out > (?) AND re.check_out <= (?)))) r ";
         }
     }
 
