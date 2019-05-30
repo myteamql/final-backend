@@ -56,7 +56,6 @@ public class ReservationService {
         Calendar calendar = Calendar.getInstance();
         java.util.Date currentDate = calendar.getTime();
         java.sql.Date date = new java.sql.Date(currentDate.getTime());
-        System.out.println(reservations);
         if (!isRoomAvailableOn(date, roomNumber)) {
             System.out.println("changing next available date for room #" + roomNumber);
             while (!flag) {
@@ -81,10 +80,12 @@ public class ReservationService {
             Connection conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
                     "sec03group01", "group01@sec03");
             preparedStatement = conn.prepareStatement(
-                    "SELECT * FROM room JOIN reservation ON room_number = room AND room = (?) WHERE (?) BETWEEN check_in AND check_out"
+                    "SELECT * FROM room JOIN reservation ON room_number = room AND room = (?) AND canceled = false " +
+                            "WHERE (?) > check_in AND (?) <= check_out"
             );
             preparedStatement.setInt(1, roomNumber);
             preparedStatement.setDate(2, date);
+            preparedStatement.setDate(3, date);
 
             resultSet = preparedStatement.executeQuery();
             if (!resultSet.next())
