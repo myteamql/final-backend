@@ -20,11 +20,15 @@ public class Reservation {
     private int room;
     private Date checkIn;
     private Date checkOut;
-    private float rate;
     private String lastName;
     private String firstName;
     private int adults;
     private int kids;
     private boolean canceled;
     private Long crNumber;
+
+    public Reservation(Date checkIn, Date checkOut) {
+        this.checkIn = checkIn;
+        this.checkOut = checkOut;
+    }
 }
