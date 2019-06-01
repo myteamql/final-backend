@@ -8,6 +8,7 @@ import java.sql.Date;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 @RestController
 public class RoomController {
@@ -47,6 +48,7 @@ public class RoomController {
     @CrossOrigin
     public Room createRoom(@RequestBody Room room) {
         room.setPopularity(0);
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
         Calendar calendar = Calendar.getInstance();
         java.util.Date currentDate = calendar.getTime();
         java.sql.Date date = new java.sql.Date(currentDate.getTime());
@@ -67,7 +69,8 @@ public class RoomController {
     public List<Room> searchRooms(@PathVariable("checkin") Date checkin, @PathVariable("checkout") Date checkout,
                                   @PathVariable("occupants") int occupants, @PathVariable("type") String type,
                                   @PathVariable("decor") String decor, @PathVariable("price_floor") float price_floor,
-                                  @PathVariable("price_ceiling") float price_ceiling) {
+                                  @PathVariable("price_ceiling") float price_ceiling
+                                    ) {
         List<Room> rooms = roomService.getRooms(checkin, checkout, occupants, type.toLowerCase(), decor.toLowerCase(), price_floor, price_ceiling);
         return rooms;
     }
