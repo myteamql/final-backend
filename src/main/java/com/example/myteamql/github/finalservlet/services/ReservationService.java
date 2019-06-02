@@ -1,5 +1,6 @@
 package com.example.myteamql.github.finalservlet.services;
 
+import com.example.myteamql.github.finalservlet.entities.Payment;
 import com.example.myteamql.github.finalservlet.entities.Reservation;
 import com.example.myteamql.github.finalservlet.entities.Room;
 import com.example.myteamql.github.finalservlet.repositories.ReservationRepository;
@@ -19,6 +20,8 @@ public class ReservationService {
     private ReservationRepository reservationRepository;
     @Autowired
     private RoomService roomService;
+    @Autowired
+    private PaymentService paymentService;
 
     public Reservation findReservationByCode(int code) {
         return reservationRepository.findByCode(code);
@@ -39,10 +42,41 @@ public class ReservationService {
         }
     }
 
-    public void cancel(int code) {
+    public boolean replace(Reservation newReservation, Reservation oldReservation) {
+        // For changing a reservation
+        reservationRepository.delete(oldReservation);
+        int roomNum = newReservation.getRoom();
+        Room room = roomService.getRoomByRoomNumber(roomNum);
+        List<Room> availables = roomService.getAllRoomsByAvailability(newReservation.getCheckIn(), newReservation.getCheckOut());
+        if (room.getMaxOccupants() >= newReservation.getAdults() + newReservation.getKids() && availables.contains(room)) {
+            reservationRepository.save(newReservation);
+            return true;
+        } else {
+            System.out.println("unable to reserve room");
+            // If you can't add newReservation, put oldReservation back into repository
+            reservationRepository.save(oldReservation);
+            return false;
+        }
+    }
+
+    public Reservation calculatePayment(Reservation reservation, Room room) {
+        Payment newPayment = new Payment();
+        Long checkIn = reservation.getCheckIn().getTime();
+        Long checkOut = reservation.getCheckOut().getTime();
+        newPayment.setCharged(((checkOut - checkIn) / 86400000.0 * room.getPrice()));
+        newPayment.setReservationCode(reservation.getCode());
+        newPayment.setCrNumber(reservation.getCrNumber());
+        paymentService.insert(newPayment);
+        changeNextAvailable(reservation.getRoom());
+        return reservation;
+    }
+
+    public Reservation cancel(int code) {
+        // For canceling reservation (returns cancelled reservation to display details)
         Reservation reservation = findReservationByCode(code);
         reservation.setCanceled(true);
         reservationRepository.save(reservation);
+        return reservation;
     }
 
     public List<Reservation> getAllReservations() {
@@ -138,6 +172,39 @@ public class ReservationService {
                             "WHERE room_number = (?) ORDER BY check_in"
             );
             preparedStatement.setInt(1, roomNumber);
+
+            resultSet = preparedStatement.executeQuery();
+            reservations = unpackResultSet(resultSet);
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        finally{
+            try {
+                resultSet.close();
+                preparedStatement.close();
+            }catch(SQLException e){
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return reservations;
+    }
+
+    private List<Reservation> getAllUserReservations(String firstname, String lastname) {
+        // For displaying a particular users entire list of reservations
+        PreparedStatement preparedStatement = null;
+        List<Reservation> reservations = null;
+        ResultSet resultSet = null;
+        try{
+            Connection conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
+                    "sec03group01", "group01@sec03");
+            preparedStatement = conn.prepareStatement(
+                    "SELECT * FROM room JOIN reservation ON room = room_number " +
+                            "WHERE firstname = (?) AND lastname = (?) ORDER BY check_in"
+            );
+            preparedStatement.setString(1, firstname);
+            preparedStatement.setString(1, lastname);
 
             resultSet = preparedStatement.executeQuery();
             reservations = unpackResultSet(resultSet);

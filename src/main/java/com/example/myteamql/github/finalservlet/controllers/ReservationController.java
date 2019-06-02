@@ -47,15 +47,7 @@ public class ReservationController {
             reservation.setCanceled(false);
             Room room = roomService.getRoomByRoomNumber(reservation.getRoom());
             if (reservationService.insert(reservation)) {
-                Payment newPayment = new Payment();
-                Long checkIn = reservation.getCheckIn().getTime();
-                Long checkOut = reservation.getCheckOut().getTime();
-                newPayment.setCharged(((checkOut - checkIn) / 86400000.0 * room.getPrice()));
-                newPayment.setReservationCode(reservation.getCode());
-                newPayment.setCrNumber(reservation.getCrNumber());
-                paymentController.pay(newPayment);
-                reservationService.changeNextAvailable(reservation.getRoom());
-                return reservation;
+                return reservationService.calculatePayment(reservation, room);
             }
         } else {
             System.out.println("Not a valid credit card.");
@@ -64,10 +56,30 @@ public class ReservationController {
         return null;
     }
 
-    @PutMapping(value = "/reservation/{code}")
+    @PutMapping(value = "/reservation")
     @CrossOrigin
-    public void cancelReservation(@PathVariable("code") int code) {
-        reservationService.cancel(code);
+    public Reservation changeReservation(@RequestBody Reservation newReservation) throws ParseException {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+        Reservation oldReservation = reservationService.findReservationByCode(newReservation.getCode());
+        newReservation.setFirstName(newReservation.getFirstName().toLowerCase());
+        newReservation.setLastName(newReservation.getLastName().toLowerCase());
+        if (creditCardController.validateCard(newReservation.getCrNumber(), newReservation.getFirstName(), newReservation.getLastName())) {
+            newReservation.setCanceled(false);
+            Room room = roomService.getRoomByRoomNumber(newReservation.getRoom());
+            if (reservationService.replace(newReservation, oldReservation)) {
+                return reservationService.calculatePayment(newReservation, room);
+            }
+        } else {
+            System.out.println("Not a valid credit card.");
+            /* not a valid credit card */
+        }
+        return null;
+    }
+
+    @PutMapping(value = "/reservation/cancel/{code}")
+    @CrossOrigin
+    public Reservation cancelReservation(@PathVariable("code") int code) {
+        return reservationService.cancel(code);
     }
 
 }
