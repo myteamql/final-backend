@@ -15,14 +15,18 @@ import java.util.TimeZone;
 @RestController
 public class ReservationController {
 
-    @Autowired
     private ReservationService reservationService;
-    @Autowired
     private CreditCardController creditCardController;
-    @Autowired
     private PaymentController paymentController;
-    @Autowired
     private RoomService roomService;
+
+    @Autowired
+    public ReservationController(ReservationService reservationService, CreditCardController creditCardController, PaymentController paymentController, RoomService roomService) {
+        this.reservationService = reservationService;
+        this.creditCardController = creditCardController;
+        this.paymentController = paymentController;
+        this.roomService = roomService;
+    }
 
     @GetMapping(value = "/reservation/{code}")
     @CrossOrigin

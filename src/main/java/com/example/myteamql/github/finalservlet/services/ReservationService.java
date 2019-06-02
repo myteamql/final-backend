@@ -3,6 +3,7 @@ package com.example.myteamql.github.finalservlet.services;
 import com.example.myteamql.github.finalservlet.entities.Reservation;
 import com.example.myteamql.github.finalservlet.entities.Room;
 import com.example.myteamql.github.finalservlet.repositories.ReservationRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,15 +11,19 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 
 @Service
+@Log4j2
 public class ReservationService {
 
-    @Autowired
     private ReservationRepository reservationRepository;
-    @Autowired
     private RoomService roomService;
+
+    @Autowired
+    public ReservationService(ReservationRepository reservationRepository, RoomService roomService) {
+        this.reservationRepository = reservationRepository;
+        this.roomService = roomService;
+    }
 
     public Reservation findReservationByCode(int code) {
         return reservationRepository.findByCode(code);
@@ -49,18 +54,6 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-//    public void availableToday(int roomNumber) {
-//        // check if room is available today
-//        Calendar calendar = Calendar.getInstance();
-//        java.util.Date currentDate = calendar.getTime();
-//        java.sql.Date date = new java.sql.Date(currentDate.getTime());
-//        if (!isRoomAvailableOn(date, roomNumber)) {
-//            Room room = roomService.getRoomByRoomNumber(roomNumber);
-//            room.setNextAvailable(date);
-//            roomService.insert(room);
-//        }
-//    }
-
     public void changeNextAvailable(int roomNumber) {
         Calendar calendar = Calendar.getInstance();
         java.util.Date currentDate = calendar.getTime();
@@ -70,20 +63,21 @@ public class ReservationService {
             List<Reservation> reservations = getCheckInsAndCheckOuts(roomNumber);
             boolean flag = false;
             int i = 0;
-            System.out.println("changing next available date for room #" + roomNumber);
+            log.info("changing next available date for room #" + roomNumber);
             while (!flag) {
                 if (reservations.get(i).getCheckOut().equals(reservations.get(i + 1).getCheckIn())) {
                     i++;
                 } else {
                     flag = true;
                     Room room = roomService.getRoomByRoomNumber(roomNumber);
-                    System.out.println("checkout: "+reservations.get(i).getCheckOut());
+                    log.info("checkout: "+reservations.get(i).getCheckOut());
                     room.setNextAvailable(reservations.get(i).getCheckOut());
                     roomService.insert(room);
                     return;
                 }
             }
         } else {
+            log.info("AVAILABLE TODAY: " + date);
             Room room = roomService.getRoomByRoomNumber(roomNumber);
             room.setNextAvailable(date);
             roomService.insert(room);
