@@ -191,7 +191,7 @@ public class ReservationService {
         return reservations;
     }
 
-    private List<Reservation> getAllUserReservations(String firstname, String lastname) {
+    public List<Reservation> getAllUserReservations(String firstname, String lastname) {
         // For displaying a particular users entire list of reservations
         PreparedStatement preparedStatement = null;
         List<Reservation> reservations = null;

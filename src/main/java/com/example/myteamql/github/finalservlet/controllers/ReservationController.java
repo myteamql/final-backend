@@ -37,6 +37,12 @@ public class ReservationController {
         return reservations;
     }
 
+    @GetMapping(value="/reservations/{firstname}/{lastname}")
+    @CrossOrigin
+    public List<Reservation> userReservations(@PathVariable("firstname") String firstname, @PathVariable("lastname") String lastname) {
+        return reservationService.getAllUserReservations(firstname, lastname);
+    }
+
     @PostMapping(value = "/reservation")
     @CrossOrigin
     public Reservation createReservation(@RequestBody Reservation reservation) throws ParseException {
