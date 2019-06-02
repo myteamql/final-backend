@@ -123,8 +123,9 @@ public class ReservationService {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         boolean available = false;
+        Connection conn = null;
         try{
-            Connection conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
+             conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
                     "sec03group01", "group01@sec03");
             preparedStatement = conn.prepareStatement(
                     "SELECT * FROM room JOIN reservation ON room_number = room AND room = (?) AND canceled = false " +
@@ -139,12 +140,14 @@ public class ReservationService {
                 available =  true;
             else
                 available =  false;
+
         }
         catch (Exception e){
             System.out.println(e.getMessage());
         }
         finally{
             try {
+                conn.close();
                 resultSet.close();
                 preparedStatement.close();
             }catch(SQLException e){
@@ -159,8 +162,9 @@ public class ReservationService {
         PreparedStatement preparedStatement = null;
         List<Reservation> reservations = null;
         ResultSet resultSet = null;
+        Connection conn = null;
         try{
-            Connection conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
+            conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
                     "sec03group01", "group01@sec03");
             preparedStatement = conn.prepareStatement(
                     "SELECT check_in, check_out FROM room JOIN reservation ON room = room_number " +
@@ -176,6 +180,7 @@ public class ReservationService {
         }
         finally{
             try {
+                conn.close();
                 resultSet.close();
                 preparedStatement.close();
             }catch(SQLException e){
@@ -191,8 +196,9 @@ public class ReservationService {
         PreparedStatement preparedStatement = null;
         List<Reservation> reservations = null;
         ResultSet resultSet = null;
+        Connection conn = null;
         try{
-            Connection conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
+            conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
                     "sec03group01", "group01@sec03");
             preparedStatement = conn.prepareStatement(
                     "SELECT * FROM room JOIN reservation ON room = room_number " +
@@ -209,6 +215,7 @@ public class ReservationService {
         }
         finally{
             try {
+                conn.close();
                 resultSet.close();
                 preparedStatement.close();
             }catch(SQLException e){
@@ -234,8 +241,9 @@ public class ReservationService {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         List<RoomRevenue> roomRevenues = null;
+        Connection conn = null;
         try{
-            Connection conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
+            conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
                     "sec03group01", "group01@sec03");
             preparedStatement = conn.prepareStatement(
                     "SELECT room_number, YEAR(check_out) AS y, MONTHNAME(check_out) AS m, SUM(DATEDIFF(check_out, check_in) * price) AS revenue " +
@@ -252,6 +260,7 @@ public class ReservationService {
         }
         finally{
             try {
+                conn.close();
                 resultSet.close();
                 preparedStatement.close();
             }catch(SQLException e){
