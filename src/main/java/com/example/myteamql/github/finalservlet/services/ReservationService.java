@@ -1,5 +1,6 @@
 package com.example.myteamql.github.finalservlet.services;
 
+import com.example.myteamql.github.finalservlet.additional.RoomRevenue;
 import com.example.myteamql.github.finalservlet.entities.Payment;
 import com.example.myteamql.github.finalservlet.entities.Reservation;
 import com.example.myteamql.github.finalservlet.entities.Room;
@@ -233,5 +234,50 @@ public class ReservationService {
             reservations.add(reservation);
         }
         return reservations;
+    }
+
+    public List<RoomRevenue> getAllRoomsYearMonthRevenue() {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        List<RoomRevenue> roomRevenues = null;
+        try{
+            Connection conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
+                    "sec03group01", "group01@sec03");
+            preparedStatement = conn.prepareStatement(
+                    "SELECT room_number, YEAR(check_out) AS y, MONTHNAME(check_out) AS m, SUM(DATEDIFF(check_out, check_in) * price) AS revenue " +
+                            "FROM reservation " +
+                            "JOIN room ON room_number=room " +
+                            "GROUP BY room_number, YEAR(check_out), MONTHNAME(check_out)" +
+                            "ORDER BY room_number"
+            );
+            resultSet = preparedStatement.executeQuery();
+            roomRevenues = unpackRoomRevenueResultSet(resultSet);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        finally{
+            try {
+                resultSet.close();
+                preparedStatement.close();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return roomRevenues;
+    }
+
+    private List<RoomRevenue> unpackRoomRevenueResultSet(ResultSet rs) throws SQLException {
+        List<RoomRevenue> roomRevenues = new ArrayList<>();
+        while(rs.next()) {
+            RoomRevenue roomRevenue = new RoomRevenue(
+                    rs.getInt("room_number"),
+                    rs.getInt("y"),
+                    rs.getString("m"),
+                    rs.getDouble("revenue")
+            );
+            roomRevenues.add(roomRevenue);
+        }
+        return roomRevenues;
     }
 }

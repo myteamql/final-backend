@@ -6,6 +6,8 @@ import com.example.myteamql.github.finalservlet.entities.Room;
 import com.example.myteamql.github.finalservlet.services.ReservationService;
 import com.example.myteamql.github.finalservlet.services.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -82,4 +84,14 @@ public class ReservationController {
         return reservationService.cancel(code);
     }
 
+    @GetMapping(value = "/revenue")
+    @CrossOrigin
+    public ResponseEntity getAllRoomsYearMonthRevenue() {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(reservationService.getAllRoomsYearMonthRevenue());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(null);
+        }
+    }
 }
