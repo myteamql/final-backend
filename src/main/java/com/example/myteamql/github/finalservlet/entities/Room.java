@@ -1,7 +1,6 @@
 package com.example.myteamql.github.finalservlet.entities;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +16,8 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int roomNumber;
 
+    private String roomID;
+    private String roomName;
     private int maxOccupants;
     private String type;
     private String decor;
@@ -27,8 +28,9 @@ public class Room {
     private String pictureurl;
     private Date nextAvailable;
 
-    public Room(int roomNumber, int maxOccupants, String type, String decor, float price, int beds, float length, float popularity, String pictureurl, Date nextAvailable) {
-        this.roomNumber = roomNumber;
+    public Room(String roomID, String roomName, int maxOccupants, String type, String decor, float price, int beds, float length, float popularity, String pictureurl, Date nextAvailable) {
+        this.roomID = roomID;
+        this.roomName = roomName;
         this.maxOccupants = maxOccupants;
         this.type = type;
         this.decor = decor;
@@ -38,10 +40,6 @@ public class Room {
         this.popularity = popularity;
         this.pictureurl = pictureurl;
         this.nextAvailable = nextAvailable;
-    }
-
-    public Room(){
-
     }
 
     public Room(int roomNumber, float popularity){
