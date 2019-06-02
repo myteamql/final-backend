@@ -49,8 +49,9 @@ public class RoomService {
     PreparedStatement preparedStatement = null;
     List<Room> rooms = null;
     ResultSet resultSet = null;
+    Connection conn = null;
     try {
-      Connection conn =
+      conn =
           DriverManager.getConnection(
               "jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
               "sec03group01",
@@ -71,6 +72,7 @@ public class RoomService {
       System.out.println(e.getMessage());
     } finally {
       try {
+        conn.close();
         resultSet.close();
         preparedStatement.close();
       } catch (SQLException e) {
@@ -92,8 +94,9 @@ public class RoomService {
     PreparedStatement preparedStatement = null;
     List<Room> rooms = null;
     ResultSet resultSet = null;
+    Connection conn = null;
     try {
-      Connection conn =
+      conn =
           DriverManager.getConnection(
               "jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
               "sec03group01",
@@ -160,6 +163,7 @@ public class RoomService {
       System.out.println(e.getMessage());
     } finally {
       try {
+        conn.close();
         resultSet.close();
         preparedStatement.close();
       } catch (SQLException e) {
