@@ -1,9 +1,11 @@
 package com.example.myteamql.github.finalservlet.services;
 
+import com.example.myteamql.github.finalservlet.additional.RoomRevenue;
 import com.example.myteamql.github.finalservlet.entities.Payment;
 import com.example.myteamql.github.finalservlet.entities.Reservation;
 import com.example.myteamql.github.finalservlet.entities.Room;
 import com.example.myteamql.github.finalservlet.repositories.ReservationRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,17 +13,21 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 
 @Service
+@Log4j2
 public class ReservationService {
 
-    @Autowired
     private ReservationRepository reservationRepository;
-    @Autowired
     private RoomService roomService;
     @Autowired
     private PaymentService paymentService;
+
+    @Autowired
+    public ReservationService(ReservationRepository reservationRepository, RoomService roomService) {
+        this.reservationRepository = reservationRepository;
+        this.roomService = roomService;
+    }
 
     public Reservation findReservationByCode(int code) {
         return reservationRepository.findByCode(code);
@@ -83,18 +89,6 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-//    public void availableToday(int roomNumber) {
-//        // check if room is available today
-//        Calendar calendar = Calendar.getInstance();
-//        java.util.Date currentDate = calendar.getTime();
-//        java.sql.Date date = new java.sql.Date(currentDate.getTime());
-//        if (!isRoomAvailableOn(date, roomNumber)) {
-//            Room room = roomService.getRoomByRoomNumber(roomNumber);
-//            room.setNextAvailable(date);
-//            roomService.insert(room);
-//        }
-//    }
-
     public void changeNextAvailable(int roomNumber) {
         Calendar calendar = Calendar.getInstance();
         java.util.Date currentDate = calendar.getTime();
@@ -104,20 +98,21 @@ public class ReservationService {
             List<Reservation> reservations = getCheckInsAndCheckOuts(roomNumber);
             boolean flag = false;
             int i = 0;
-            System.out.println("changing next available date for room #" + roomNumber);
+            log.info("changing next available date for room #" + roomNumber);
             while (!flag) {
                 if (reservations.get(i).getCheckOut().equals(reservations.get(i + 1).getCheckIn())) {
                     i++;
                 } else {
                     flag = true;
                     Room room = roomService.getRoomByRoomNumber(roomNumber);
-                    System.out.println("checkout: "+reservations.get(i).getCheckOut());
+                    log.info("checkout: "+reservations.get(i).getCheckOut());
                     room.setNextAvailable(reservations.get(i).getCheckOut());
                     roomService.insert(room);
                     return;
                 }
             }
         } else {
+            log.info("AVAILABLE TODAY: " + date);
             Room room = roomService.getRoomByRoomNumber(roomNumber);
             room.setNextAvailable(date);
             roomService.insert(room);
@@ -233,5 +228,50 @@ public class ReservationService {
             reservations.add(reservation);
         }
         return reservations;
+    }
+
+    public List<RoomRevenue> getAllRoomsYearMonthRevenue() {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        List<RoomRevenue> roomRevenues = null;
+        try{
+            Connection conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
+                    "sec03group01", "group01@sec03");
+            preparedStatement = conn.prepareStatement(
+                    "SELECT room_number, YEAR(check_out) AS y, MONTHNAME(check_out) AS m, SUM(DATEDIFF(check_out, check_in) * price) AS revenue " +
+                            "FROM reservation " +
+                            "JOIN room ON room_number=room " +
+                            "GROUP BY room_number, YEAR(check_out), MONTHNAME(check_out)" +
+                            "ORDER BY room_number"
+            );
+            resultSet = preparedStatement.executeQuery();
+            roomRevenues = unpackRoomRevenueResultSet(resultSet);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        finally{
+            try {
+                resultSet.close();
+                preparedStatement.close();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return roomRevenues;
+    }
+
+    private List<RoomRevenue> unpackRoomRevenueResultSet(ResultSet rs) throws SQLException {
+        List<RoomRevenue> roomRevenues = new ArrayList<>();
+        while(rs.next()) {
+            RoomRevenue roomRevenue = new RoomRevenue(
+                    rs.getInt("room_number"),
+                    rs.getInt("y"),
+                    rs.getString("m"),
+                    rs.getDouble("revenue")
+            );
+            roomRevenues.add(roomRevenue);
+        }
+        return roomRevenues;
     }
 }

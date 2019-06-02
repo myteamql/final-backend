@@ -6,6 +6,8 @@ import com.example.myteamql.github.finalservlet.entities.Room;
 import com.example.myteamql.github.finalservlet.services.ReservationService;
 import com.example.myteamql.github.finalservlet.services.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -15,14 +17,18 @@ import java.util.TimeZone;
 @RestController
 public class ReservationController {
 
-    @Autowired
     private ReservationService reservationService;
-    @Autowired
     private CreditCardController creditCardController;
-    @Autowired
     private PaymentController paymentController;
-    @Autowired
     private RoomService roomService;
+
+    @Autowired
+    public ReservationController(ReservationService reservationService, CreditCardController creditCardController, PaymentController paymentController, RoomService roomService) {
+        this.reservationService = reservationService;
+        this.creditCardController = creditCardController;
+        this.paymentController = paymentController;
+        this.roomService = roomService;
+    }
 
     @GetMapping(value = "/reservation/{code}")
     @CrossOrigin
@@ -88,4 +94,14 @@ public class ReservationController {
         return reservationService.cancel(code);
     }
 
+    @GetMapping(value = "/revenue")
+    @CrossOrigin
+    public ResponseEntity getAllRoomsYearMonthRevenue() {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(reservationService.getAllRoomsYearMonthRevenue());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(null);
+        }
+    }
 }
