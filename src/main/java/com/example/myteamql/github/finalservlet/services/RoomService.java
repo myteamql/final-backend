@@ -255,8 +255,7 @@ public class RoomService {
     while (rs.next()) {
       Room room =
           new Room(
-                  rs.getString("roomID"),
-                  rs.getString("roomName"),
+              rs.getInt("room_number"),
               rs.getInt("max_occupants"),
               rs.getString("type"),
               rs.getString("decor"),

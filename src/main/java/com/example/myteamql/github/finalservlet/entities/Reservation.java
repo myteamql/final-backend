@@ -31,4 +31,18 @@ public class Reservation {
         this.checkIn = checkIn;
         this.checkOut = checkOut;
     }
+
+    public Reservation(int code, int room, Date checkIn, Date checkOut, String lastName, String firstName, int adults,
+                       int kids, boolean canceled, long crNumber){
+        this.code = code;
+        this.room = room;
+        this.checkIn = checkIn;
+        this.checkOut = checkOut;
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.adults = adults;
+        this.kids = kids;
+        this.canceled = canceled;
+        this.crNumber = crNumber;
+    }
 }

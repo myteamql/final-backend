@@ -16,8 +16,6 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int roomNumber;
 
-    private String roomID;
-    private String roomName;
     private int maxOccupants;
     private String type;
     private String decor;
@@ -28,9 +26,8 @@ public class Room {
     private String pictureurl;
     private Date nextAvailable;
 
-    public Room(String roomID, String roomName, int maxOccupants, String type, String decor, float price, int beds, float length, float popularity, String pictureurl, Date nextAvailable) {
-        this.roomID = roomID;
-        this.roomName = roomName;
+    public Room(int roomNumber, int maxOccupants, String type, String decor, float price, int beds, float length, float popularity, String pictureurl, Date nextAvailable) {
+        this.roomNumber = roomNumber;
         this.maxOccupants = maxOccupants;
         this.type = type;
         this.decor = decor;
@@ -45,5 +42,9 @@ public class Room {
     public Room(int roomNumber, float popularity){
         this.roomNumber=roomNumber;
         this.popularity=popularity;
+    }
+
+    public Room(){
+
     }
 }
