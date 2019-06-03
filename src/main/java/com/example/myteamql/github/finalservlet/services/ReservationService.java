@@ -202,13 +202,13 @@ public class ReservationService {
                     "sec03group01", "group01@sec03");
             preparedStatement = conn.prepareStatement(
                     "SELECT * FROM room JOIN reservation ON room = room_number " +
-                            "WHERE firstname = (?) AND lastname = (?) ORDER BY check_in"
+                            "WHERE first_name = (?) AND last_name = (?) ORDER BY check_in"
             );
             preparedStatement.setString(1, firstname);
-            preparedStatement.setString(1, lastname);
+            preparedStatement.setString(2, lastname);
 
             resultSet = preparedStatement.executeQuery();
-            reservations = unpackResultSet(resultSet);
+            reservations = unpackResultSetRes(resultSet);
         }
         catch (Exception e){
             System.out.println(e.getMessage());
@@ -231,7 +231,28 @@ public class ReservationService {
         while(rs.next()) {
             Reservation reservation = new Reservation(
                     rs.getDate("check_in"),
-                    rs.getDate("check_out"));
+                    rs.getDate("check_out")
+                    );
+            reservations.add(reservation);
+        }
+        return reservations;
+    }
+
+    private List<Reservation> unpackResultSetRes(ResultSet rs) throws SQLException {
+        List<Reservation> reservations = new ArrayList<>();
+        while(rs.next()) {
+            Reservation reservation = new Reservation(
+                    rs.getInt("code"),
+                    rs.getInt("room"),
+                    rs.getDate("check_in"),
+                    rs.getDate("check_out"),
+                    rs.getString("last_name"),
+                    rs.getString("first_name"),
+                    rs.getInt("adults"),
+                    rs.getInt("kids"),
+                    rs.getBoolean("canceled"),
+                    rs.getLong("cr_number")
+            );
             reservations.add(reservation);
         }
         return reservations;
