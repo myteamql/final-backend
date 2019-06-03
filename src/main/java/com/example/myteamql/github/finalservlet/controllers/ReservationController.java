@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.sql.Date;
 
 import java.text.ParseException;
 import java.util.List;
@@ -68,24 +69,12 @@ public class ReservationController {
         return null;
     }
 
-    @PutMapping(value = "/reservation")
+    @PutMapping(value = "/reservation/{code}/{checkin}/{checkout}/{room}")
     @CrossOrigin
-    public Reservation changeReservation(@RequestBody Reservation newReservation) throws ParseException {
+    public Reservation changeReservation(@PathVariable("code") int code, @PathVariable("room") int room,
+                                         @PathVariable("checkin") Date checkin, @PathVariable("checkout") Date checkout){
         TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
-        Reservation oldReservation = reservationService.findReservationByCode(newReservation.getCode());
-        newReservation.setFirstName(newReservation.getFirstName().toLowerCase());
-        newReservation.setLastName(newReservation.getLastName().toLowerCase());
-        if (creditCardController.validateCard(newReservation.getCrNumber(), newReservation.getFirstName(), newReservation.getLastName())) {
-            newReservation.setCanceled(false);
-            Room room = roomService.getRoomByRoomNumber(newReservation.getRoom());
-            if (reservationService.replace(newReservation, oldReservation)) {
-                return reservationService.calculatePayment(newReservation, room);
-            }
-        } else {
-            System.out.println("Not a valid credit card.");
-            /* not a valid credit card */
-        }
-        return null;
+        return reservationService.changeReservation(code, room, checkin, checkout);
     }
 
     @PutMapping(value = "/reservation/cancel/{code}")
