@@ -85,6 +85,22 @@ public class ReservationService {
         return reservation;
     }
 
+    public Reservation changeReservation(int code, int room, Date checkin, Date checkout) {
+        // For changing a reservation
+        Reservation reservation = findReservationByCode(code);
+        reservation.setCheckIn(checkin);
+        reservation.setCheckOut(checkout);
+        reservation.setRoom(room);
+        if(insert(reservation)) {
+            reservationRepository.save(reservation);
+            return reservation;
+        }
+        else{
+            System.out.println("unable to change reservation");
+            return null;
+        }
+    }
+
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
     }
