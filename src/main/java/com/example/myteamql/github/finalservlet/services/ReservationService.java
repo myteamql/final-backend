@@ -91,6 +91,7 @@ public class ReservationService {
         reservation.setCheckIn(checkin);
         reservation.setCheckOut(checkout);
         reservation.setRoom(room);
+        System.out.println(reservation.getCheckIn());
         if(insert(reservation)) {
             reservationRepository.save(reservation);
             return reservation;
