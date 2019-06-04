@@ -60,7 +60,7 @@ public class RoomService {
           conn.prepareStatement(
               "SELECT * FROM room r WHERE r.room_number NOT IN "
                   + "(SELECT distinct r.room_number FROM reservation re JOIN room r ON room_number=room AND canceled=false "
-                  + "WHERE (re.check_in > (?)  AND re.check_in <= (?)) OR (re.check_out > (?)  AND re.check_out <= (?)))");
+                  + "WHERE (re.check_in >= (?)  AND re.check_in < (?)) OR (re.check_out > (?)  AND re.check_out <= (?)))");
       preparedStatement.setDate(1, checkin);
       preparedStatement.setDate(2, checkout);
       preparedStatement.setDate(3, checkin);
