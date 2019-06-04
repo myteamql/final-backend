@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.util.TimeZone;
+
 @Log4j2
 @Configuration
 @EnableScheduling
@@ -24,6 +26,7 @@ public class ScheduledJobs {
 
   @Scheduled(fixedDelay = INTERVAL)
   private void updateAvailability() {
+    TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
     log.info("Updating availabilities.");
     roomService.getAllRooms().stream()
         .map(Room::getRoomNumber)
