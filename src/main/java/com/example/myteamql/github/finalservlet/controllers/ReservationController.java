@@ -69,6 +69,15 @@ public class ReservationController {
         return null;
     }
 
+    @GetMapping(value="/reservations/nextavailable/{room}")
+    @CrossOrigin
+    public Date getNextAvail(@PathVariable("room") int roomNumber) {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+        reservationService.changeNextAvailable(roomNumber);
+        return roomService.getRoomByRoomNumber(roomNumber).getNextAvailable();
+
+    }
+
     @PutMapping(value = "/reservation/{code}/{checkin}/{checkout}/{room}")
     @CrossOrigin
     public Reservation changeReservation(@PathVariable("code") int code, @PathVariable("room") int room,

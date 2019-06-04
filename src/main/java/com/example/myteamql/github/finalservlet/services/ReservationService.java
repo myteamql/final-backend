@@ -74,7 +74,7 @@ public class ReservationService {
         newPayment.setReservationCode(reservation.getCode());
         newPayment.setCrNumber(reservation.getCrNumber());
         paymentService.insert(newPayment);
-        changeNextAvailable(reservation.getRoom());
+//        changeNextAvailable(reservation.getRoom());
         return reservation;
     }
 
