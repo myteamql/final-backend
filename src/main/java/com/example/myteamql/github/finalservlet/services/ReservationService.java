@@ -13,6 +13,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 @Service
 @Log4j2
@@ -107,6 +108,7 @@ public class ReservationService {
     }
 
     public void changeNextAvailable(int roomNumber) {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
         Calendar calendar = Calendar.getInstance();
         java.util.Date currentDate = calendar.getTime();
         java.sql.Date date = new java.sql.Date(currentDate.getTime());
@@ -118,6 +120,7 @@ public class ReservationService {
             log.info("changing next available date for room #" + roomNumber);
             while (!flag) {
                 if (reservations.get(i).getCheckOut().equals(reservations.get(i + 1).getCheckIn())) {
+                    log.info(reservations.get(i + 1).getCheckIn());
                     i++;
                 } else {
                     flag = true;
@@ -129,7 +132,7 @@ public class ReservationService {
                 }
             }
         } else {
-            log.info("AVAILABLE TODAY: " + date);
+            log.info("AVAILABLE TODAY: " + date + " " + roomNumber);
             Room room = roomService.getRoomByRoomNumber(roomNumber);
             room.setNextAvailable(date);
             roomService.insert(room);
@@ -137,6 +140,7 @@ public class ReservationService {
     }
 
     private Boolean isRoomAvailableOn(Date date, int roomNumber) {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         boolean available = false;
@@ -176,6 +180,7 @@ public class ReservationService {
     }
 
     private List<Reservation> getCheckInsAndCheckOuts(int roomNumber) {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
         PreparedStatement preparedStatement = null;
         List<Reservation> reservations = null;
         ResultSet resultSet = null;
@@ -184,7 +189,7 @@ public class ReservationService {
             conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
                     "sec03group01", "group01@sec03");
             preparedStatement = conn.prepareStatement(
-                    "SELECT check_in, check_out FROM room JOIN reservation ON room = room_number " +
+                    "SELECT check_in, check_out FROM room JOIN reservation ON room = room_number AND canceled = false " +
                             "WHERE room_number = (?) ORDER BY check_in"
             );
             preparedStatement.setInt(1, roomNumber);

@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import java.util.List;
+import java.util.TimeZone;
 
 @Service
 public class RoomService {
@@ -46,6 +47,7 @@ public class RoomService {
   }
 
   public List<Room> getAllRoomsByAvailability(Date checkin, Date checkout) {
+    TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
     PreparedStatement preparedStatement = null;
     List<Room> rooms = null;
     ResultSet resultSet = null;
@@ -91,6 +93,7 @@ public class RoomService {
       String decor,
       float price_floor,
       float price_ceiling) {
+    TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
     PreparedStatement preparedStatement = null;
     List<Room> rooms = null;
     ResultSet resultSet = null;
@@ -175,6 +178,7 @@ public class RoomService {
   }
 
   private List<Room> getPopularityScore(Connection conn) {
+    TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
     PreparedStatement preparedStatement = null;
     List<Room> rooms = null;
     ResultSet resultSet = null;
@@ -240,6 +244,7 @@ public class RoomService {
   }
 
   private String getAllRoomsByAvailabilityQuery(Date checkin, Date checkout) throws ParseException {
+    TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     if (checkin.equals(sdf.parse("0001-01-01")) || checkout.equals(sdf.parse("0001-01-01"))) {
       return "(SELECT * FROM room) r ";
