@@ -119,7 +119,7 @@ public class ReservationService {
             int i = 0;
             log.info("changing next available date for room #" + roomNumber);
             while (!flag) {
-                if (reservations.get(i).getCheckOut().equals(reservations.get(i + 1).getCheckIn())) {
+                if (reservations.size() > 2 && reservations.get(i).getCheckOut().equals(reservations.get(i + 1).getCheckIn())) {
                     log.info(reservations.get(i + 1).getCheckIn());
                     i++;
                 } else {
@@ -128,6 +128,7 @@ public class ReservationService {
                     log.info("checkout: "+reservations.get(i).getCheckOut());
                     room.setNextAvailable(reservations.get(i).getCheckOut());
                     roomService.insert(room);
+                    System.out.println(roomService.getRoomByRoomNumber(roomNumber));
                     return;
                 }
             }
@@ -150,7 +151,7 @@ public class ReservationService {
                     "sec03group01", "group01@sec03");
             preparedStatement = conn.prepareStatement(
                     "SELECT * FROM room JOIN reservation ON room_number = room AND room = (?) AND canceled = false " +
-                            "WHERE (?) > check_in AND (?) <= check_out"
+                            "WHERE (?) >= check_in AND (?) < check_out"
             );
             preparedStatement.setInt(1, roomNumber);
             preparedStatement.setDate(2, date);
@@ -190,7 +191,7 @@ public class ReservationService {
                     "sec03group01", "group01@sec03");
             preparedStatement = conn.prepareStatement(
                     "SELECT check_in, check_out FROM room JOIN reservation ON room = room_number AND canceled = false " +
-                            "WHERE room_number = (?) ORDER BY check_in"
+                            "WHERE room_number = (?) AND check_out >= CURDATE() ORDER BY check_in"
             );
             preparedStatement.setInt(1, roomNumber);
 
