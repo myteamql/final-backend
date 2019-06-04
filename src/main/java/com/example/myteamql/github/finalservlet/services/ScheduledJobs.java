@@ -28,8 +28,8 @@ public class ScheduledJobs {
   private void updateAvailability() {
     TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
     log.info("Updating availabilities.");
-    roomService.getAllRooms().stream()
-        .map(Room::getRoomNumber)
-        .forEach(reservationService::changeNextAvailable);
+//    roomService.getAllRooms().stream()
+//        .map(Room::getRoomNumber)
+//        .forEach(reservationService::changeNextAvailable);
   }
 }

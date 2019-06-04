@@ -75,7 +75,6 @@ public class ReservationController {
         TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
         reservationService.changeNextAvailable(roomNumber);
         return roomService.getRoomByRoomNumber(roomNumber).getNextAvailable();
-
     }
 
     @PutMapping(value = "/reservation/{code}/{checkin}/{checkout}/{room}")
