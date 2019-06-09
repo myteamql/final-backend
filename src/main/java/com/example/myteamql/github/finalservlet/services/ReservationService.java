@@ -273,7 +273,7 @@ public class ReservationService {
             conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
                     "sec03group01", "group01@sec03");
             preparedStatement = conn.prepareStatement(
-                    "SELECT room_number, YEAR(check_out) AS y, MONTHNAME(check_out) AS m, SUM(DATEDIFF(check_out, check_in) * price) AS revenue " +
+                    "SELECT room_number, YEAR(check_out) AS y, MONTHNAME(check_out) AS m, ROUND(SUM(DATEDIFF(check_out, check_in) * price),0) AS revenue " +
                             "FROM reservation " +
                             "JOIN room ON room_number=room " +
                             "WHERE canceled<>1 " +
