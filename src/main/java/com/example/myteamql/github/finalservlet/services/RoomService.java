@@ -58,6 +58,7 @@ public class RoomService {
               "jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
               "sec03group01",
               "group01@sec03");
+      conn.setAutoCommit(false);
       if(reservationNumber < 0) {
         preparedStatement =
                 conn.prepareStatement(
@@ -83,8 +84,13 @@ public class RoomService {
 
       resultSet = preparedStatement.executeQuery();
       rooms = unpackResultSet(resultSet);
+      conn.commit();
     } catch (Exception e) {
-      System.out.println(e.getMessage());
+      try{
+        conn.rollback();
+      }catch(SQLException s) {
+        System.out.println(s.getMessage());
+      }
     } finally {
       try {
         conn.close();
@@ -117,14 +123,13 @@ public class RoomService {
               "jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
               "sec03group01",
               "group01@sec03");
-
+      conn.setAutoCommit(false);
       List<Room> rooms_pop = getPopularityScore(conn);
       for (Room r : rooms_pop) {
         Room room = getRoomByRoomNumber(r.getRoomNumber());
         room.setPopularity(r.getPopularity());
         insert(room);
       }
-
       String preparedString =
           "SELECT * FROM "
               + getAllRoomsByAvailabilityQuery(checkin, checkout)
@@ -174,9 +179,14 @@ public class RoomService {
 
       resultSet = preparedStatement.executeQuery();
       rooms = unpackResultSet(resultSet);
+      conn.commit();
 
     } catch (Exception e) {
-      System.out.println(e.getMessage());
+      try{
+        conn.rollback();
+      }catch(SQLException s) {
+        System.out.println(s.getMessage());
+      }
     } finally {
       try {
         conn.close();
@@ -209,9 +219,14 @@ public class RoomService {
 
       resultSet = preparedStatement.executeQuery();
       rooms = unpackResultSetPopularity(resultSet);
+      conn.commit();
 
     } catch (Exception e) {
-      System.out.println(e.getMessage());
+      try{
+        conn.rollback();
+      }catch(SQLException s) {
+        System.out.println(s.getMessage());
+      }
     } finally {
       try {
         resultSet.close();
