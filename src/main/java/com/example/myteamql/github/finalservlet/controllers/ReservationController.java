@@ -1,5 +1,6 @@
 package com.example.myteamql.github.finalservlet.controllers;
 
+import com.example.myteamql.github.finalservlet.additional.RoomReservation;
 import com.example.myteamql.github.finalservlet.entities.Payment;
 import com.example.myteamql.github.finalservlet.entities.Reservation;
 import com.example.myteamql.github.finalservlet.entities.Room;
@@ -46,7 +47,7 @@ public class ReservationController {
 
     @GetMapping(value="/reservations/{firstname}/{lastname}")
     @CrossOrigin
-    public List<Reservation> userReservations(@PathVariable("firstname") String firstname, @PathVariable("lastname") String lastname) {
+    public List<RoomReservation> userReservations(@PathVariable("firstname") String firstname, @PathVariable("lastname") String lastname) {
         return reservationService.getAllUserReservations(firstname, lastname);
     }
 

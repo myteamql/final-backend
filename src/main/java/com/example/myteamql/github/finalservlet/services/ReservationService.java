@@ -1,5 +1,6 @@
 package com.example.myteamql.github.finalservlet.services;
 
+import com.example.myteamql.github.finalservlet.additional.RoomReservation;
 import com.example.myteamql.github.finalservlet.additional.RoomRevenue;
 import com.example.myteamql.github.finalservlet.entities.Payment;
 import com.example.myteamql.github.finalservlet.entities.Reservation;
@@ -197,10 +198,10 @@ public class ReservationService {
         return reservations;
     }
 
-    public List<Reservation> getAllUserReservations(String firstname, String lastname) {
+    public List<RoomReservation> getAllUserReservations(String firstname, String lastname) {
         // For displaying a particular users entire list of reservations
         PreparedStatement preparedStatement = null;
-        List<Reservation> reservations = null;
+        List<RoomReservation> reservations = null;
         ResultSet resultSet = null;
         Connection conn = null;
         try{
@@ -244,24 +245,25 @@ public class ReservationService {
         return reservations;
     }
 
-    private List<Reservation> unpackResultSetRes(ResultSet rs) throws SQLException {
-        List<Reservation> reservations = new ArrayList<>();
+    private List<RoomReservation> unpackResultSetRes(ResultSet rs) throws SQLException {
+        List<RoomReservation> roomReservations = new ArrayList<>();
         while(rs.next()) {
-            Reservation reservation = new Reservation(
+            RoomReservation roomReservation = new RoomReservation(
                     rs.getInt("code"),
                     rs.getInt("room"),
-                    rs.getDate("check_in"),
-                    rs.getDate("check_out"),
-                    rs.getString("last_name"),
-                    rs.getString("first_name"),
                     rs.getInt("adults"),
                     rs.getInt("kids"),
+                    rs.getDate("check_in"),
+                    rs.getDate("check_out"),
                     rs.getBoolean("canceled"),
-                    rs.getLong("cr_number")
+                    rs.getString("last_name"),
+                    rs.getString("first_name"),
+                    rs.getLong("cr_number"),
+                    rs.getString("pictureurl")
             );
-            reservations.add(reservation);
+            roomReservations.add(roomReservation);
         }
-        return reservations;
+        return roomReservations;
     }
 
     public List<RoomRevenue> getAllRoomsYearMonthRevenue() {
