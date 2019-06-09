@@ -60,7 +60,7 @@ public class RoomController {
     @GetMapping(value = "/roomavailable/{checkin}/{checkout}")
     @CrossOrigin
     public List<Room> searchRoomsByAvailability(@PathVariable("checkin") Date checkin, @PathVariable("checkout") Date checkout) {
-        List<Room> rooms = roomService.getAllRoomsByAvailability(checkin, checkout);
+        List<Room> rooms = roomService.getAllRoomsByAvailability(checkin, checkout, -1);
         return rooms;
     }
 

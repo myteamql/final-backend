@@ -46,7 +46,7 @@ public class RoomService {
     roomRepository.save(room);
   }
 
-  public List<Room> getAllRoomsByAvailability(Date checkin, Date checkout) {
+  public List<Room> getAllRoomsByAvailability(Date checkin, Date checkout, int reservationNumber) {
     TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
     PreparedStatement preparedStatement = null;
     List<Room> rooms = null;
@@ -58,15 +58,28 @@ public class RoomService {
               "jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
               "sec03group01",
               "group01@sec03");
-      preparedStatement =
-          conn.prepareStatement(
-              "SELECT * FROM room r WHERE r.room_number NOT IN "
-                  + "(SELECT distinct r.room_number FROM reservation re JOIN room r ON room_number=room AND canceled=false "
-                  + "WHERE (re.check_in >= (?)  AND re.check_in < (?)) OR (re.check_out > (?)  AND re.check_out <= (?)))");
-      preparedStatement.setDate(1, checkin);
-      preparedStatement.setDate(2, checkout);
-      preparedStatement.setDate(3, checkin);
-      preparedStatement.setDate(4, checkout);
+      if(reservationNumber < 0) {
+        preparedStatement =
+                conn.prepareStatement(
+                        "SELECT * FROM room r WHERE r.room_number NOT IN "
+                                + "(SELECT distinct r.room_number FROM reservation re JOIN room r ON room_number=room AND canceled=false "
+                                + "WHERE (re.check_in >= (?)  AND re.check_in < (?)) OR (re.check_out > (?) AND re.check_out <= (?)))");
+        preparedStatement.setDate(1, checkin);
+        preparedStatement.setDate(2, checkout);
+        preparedStatement.setDate(3, checkin);
+        preparedStatement.setDate(4, checkout);
+      }else{
+        preparedStatement =
+                conn.prepareStatement(
+                        "SELECT * FROM room r WHERE r.room_number NOT IN "
+                                + "(SELECT distinct r.room_number FROM reservation re JOIN room r ON room_number=room AND canceled=false AND re.code!=(?)"
+                                + "WHERE (re.check_in >= (?)  AND re.check_in < (?)) OR (re.check_out > (?) AND re.check_out <= (?)))");
+        preparedStatement.setInt(1, reservationNumber);
+        preparedStatement.setDate(2, checkin);
+        preparedStatement.setDate(3, checkout);
+        preparedStatement.setDate(4, checkin);
+        preparedStatement.setDate(5, checkout);
+      }
 
       resultSet = preparedStatement.executeQuery();
       rooms = unpackResultSet(resultSet);

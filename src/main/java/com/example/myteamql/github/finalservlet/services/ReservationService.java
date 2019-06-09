@@ -39,29 +39,12 @@ public class ReservationService {
         // check if room is already reserved for those dates
         int roomNum = reservation.getRoom();
         Room room = roomService.getRoomByRoomNumber(roomNum);
-        List<Room> availables = roomService.getAllRoomsByAvailability(reservation.getCheckIn(), reservation.getCheckOut());
+        List<Room> availables = roomService.getAllRoomsByAvailability(reservation.getCheckIn(), reservation.getCheckOut(), reservation.getCode());
         if (room.getMaxOccupants() >= reservation.getAdults() + reservation.getKids() && availables.contains(room)) {
             reservationRepository.save(reservation);
             return true;
         } else {
             System.out.println("unable to reserve room");
-            return false;
-        }
-    }
-
-    public boolean replace(Reservation newReservation, Reservation oldReservation) {
-        // For changing a reservation
-        reservationRepository.delete(oldReservation);
-        int roomNum = newReservation.getRoom();
-        Room room = roomService.getRoomByRoomNumber(roomNum);
-        List<Room> availables = roomService.getAllRoomsByAvailability(newReservation.getCheckIn(), newReservation.getCheckOut());
-        if (room.getMaxOccupants() >= newReservation.getAdults() + newReservation.getKids() && availables.contains(room)) {
-            reservationRepository.save(newReservation);
-            return true;
-        } else {
-            System.out.println("unable to reserve room");
-            // If you can't add newReservation, put oldReservation back into repository
-            reservationRepository.save(oldReservation);
             return false;
         }
     }
