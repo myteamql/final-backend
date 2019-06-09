@@ -1,5 +1,7 @@
 # final-backend Group 01 Section 03
 
+## App is hosted at https://myteamql.herokuapp.com/
+
 ## To start backend:
 mvn spring-boot:run
 
@@ -10,4 +12,4 @@ INN/creditcards.sql
 
 INN/reservations.sql
 
-## App is hosted at https://myteamql.herokuapp.com/
+
