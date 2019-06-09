@@ -1,0 +1,102 @@
+[
+  {
+    "roomNumber": 1,
+    "maxOccupants": 2,
+    "type": "King",
+    "decor": "Modern",
+    "price": 150,
+    "beds": 1,
+    "length": 89,
+    "pictureurl": "https://assets.hyatt.com/content/dam/hyatt/hyattdam/images/2017/12/13/0930/Grand-Hyatt-San-Antonio-P101-Guestroom-King.jpg/Grand-Hyatt-San-Antonio-P101-Guestroom-King.16x9.adapt.1280.720.jpg"
+  },
+  {
+    "roomNumber": 2,
+    "maxOccupants": 2,
+    "type": "King",
+    "decor": "Traditional",
+    "price": 150,
+    "beds": 1,
+    "length": 345,
+    "pictureurl": "https://www.lapeerhotel.com/images/1700-960/la-peer-signature-king-bed-workspace-view.jpg-e5e27d38.jpg"
+  },
+  {
+    "roomNumber": 3,
+    "maxOccupants": 2,
+    "type": "Queen",
+    "decor": "Shabby Chic",
+    "price": 175,
+    "beds": 1,
+    "length": 23,
+    "pictureurl": "https://cdn.decoist.com/wp-content/uploads/2015/10/Light-and-airy-bedroom-in-white-with-shabby-chic-and-coastal-touches.jpg"
+  },
+  {
+    "roomNumber": 4,
+    "maxOccupants": 4,
+    "type": "Full",
+    "decor": "Bohemian",
+    "price": 125,
+    "beds": 2,
+    "length": 233,
+    "pictureurl": "https://cache.marriott.com/marriottassets/marriott/SAVAK/savak-guestroom-5579-hor-clsc.jpg?interpolation=progressive-bilinear&"
+  },
+  {
+    "roomNumber": 5,
+    "maxOccupants": 2,
+    "type": "Queen",
+    "decor": "Minimalist",
+    "price": 100,
+    "beds": 1,
+    "length": 74,
+    "pictureurl": "https://www.italianbark.com/wp-content/uploads/2018/01/Muji-Hotel-Shenzhen-02-hotel-room-design-trends-italianbark-.jpg"
+  },
+  {
+    "roomNumber": 6,
+    "maxOccupants": 4,
+    "type": "Twin",
+    "decor": "Modern",
+    "price": 150,
+    "beds": 2,
+    "length": 21,
+    "pictureurl": "https://media-cdn.tripadvisor.com/media/photo-s/01/13/75/60/twin-bedroom.jpg"
+  },
+  {
+    "roomNumber": 7,
+    "maxOccupants": 2,
+    "type": "Full",
+    "decor": "Traditional",
+    "price": 75,
+    "beds": 1,
+    "length": 77,
+    "pictureurl": "https://q-xx.bstatic.com/xdata/images/hotel/max1024x768/183201733.jpg?k=6c1d2099527e1435a128cb29b2fcc6a62a8e11c6645608e2057a0fb420caa930&amp;o="
+  },
+  {
+    "roomNumber": 8,
+    "maxOccupants": 2,
+    "type": "King",
+    "decor": "Bohemian",
+    "price": 175,
+    "beds": 1,
+    "length": 56,
+    "pictureurl": "https://res.cloudinary.com/simpleview/image/upload/c_fill,w_1020,h_595,q_auto:eco,f_auto,g_auto/crm/charleston/16VG_ExploreCharleston_MarketPavilion_KingGuestroom0_dc607a38-5056-a36a-06d70d422d223bdc.jpg"
+  },
+  {
+    "roomNumber": 9,
+    "maxOccupants": 4,
+    "type": "Queen",
+    "decor": "Traditional",
+    "price": 175,
+    "beds": 2,
+    "length": 123,
+    "pictureurl": "https://q-fa.bstatic.com/xdata/images/xphoto/1024x768/36556254.jpg?k=890cef81f5ddff55034117bc76ee604f7b1373d8d3fd14e5309eefcd19029ba7&o="
+  },
+  {
+    "roomNumber": 10,
+    "maxOccupants": 4,
+    "type": "King",
+    "decor": "Traditional",
+    "price": 250,
+    "beds": 2,
+    "length": 111,
+    "pictureurl": "https://media-cdn.tripadvisor.com/media/photo-s/05/48/6d/52/ironworks-hotel.jpg"
+  }
+]

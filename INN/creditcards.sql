@@ -1,0 +1,9 @@
+INSERT INTO credit_card(cr_number,first,last) VALUES (4050064737918711,'Gina','Filangeri');
+INSERT INTO credit_card(cr_number,first,last) VALUES (4335740125406966,'Shannon','Marquiss');
+INSERT INTO credit_card(cr_number,first,last) VALUES (4331047993894891,'Alex','Tschopp');
+INSERT INTO credit_card(cr_number,first,last) VALUES (4894731761208975,'Ethan','Agranoff');
+INSERT INTO credit_card(cr_number,first,last) VALUES (4834582534112082,'Toshi','Kuboi');
+INSERT INTO credit_card(cr_number,first,last) VALUES (4623384187189698,'Jane','Doe');
+INSERT INTO credit_card(cr_number,first,last) VALUES (4707440189470665,'John','Smith');
+INSERT INTO credit_card(cr_number,first,last) VALUES (4492110208503882,'Newton','Bendickson');
+INSERT INTO credit_card(cr_number,first,last) VALUES (4551144291813708,'Emma','Wheelock');

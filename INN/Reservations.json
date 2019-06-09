@@ -1,0 +1,102 @@
+[
+  {
+    "room": 1,
+    "checkIn": "2019-06-13",
+    "checkOut": "2019-06-17",
+    "lastName": "Filangeri",
+    "firstName": "Gina",
+    "adults": 2,
+    "kids": 0,
+    "crNumber": 4050064737918711
+  },
+  {
+    "room": 2,
+    "checkIn": "2019-06-13",
+    "checkOut": "2019-06-17",
+    "lastName": "Marquiss",
+    "firstName": "Shannon",
+    "adults": 2,
+    "kids": 0,
+    "crNumber": 4335740125406966
+  },
+  {
+    "room": 1,
+    "checkIn": "2019-06-18",
+    "checkOut": "2019-06-22",
+    "lastName": "Tschopp",
+    "firstName": "Alex",
+    "adults": 2,
+    "kids": 0,
+    "crNumber": 4331047993894891
+  },
+  {
+    "room": 3,
+    "checkIn": "2019-10-01",
+    "checkOut": "2019-10-07",
+    "lastName": "Agranoff",
+    "firstName": "Ethan",
+    "adults": 2,
+    "kids": 0,
+    "crNumber": 4894731761208975
+  },
+  {
+    "room": 4,
+    "checkIn": "2019-10-01",
+    "checkOut": "2019-10-07",
+    "lastName": "Kuboi",
+    "firstName": "Toshi",
+    "adults": 2,
+    "kids": 2,
+    "crNumber": 4834582534112082
+  },
+  {
+    "room": 10,
+    "checkIn": "2019-07-31",
+    "checkOut": "2019-08-01",
+    "lastName": "Newton",
+    "firstName": "Bendickson",
+    "adults": 2,
+    "kids": 2,
+    "crNumber": 4492110208503882
+  },
+  {
+    "room": 8,
+    "checkIn": "2019-07-15",
+    "checkOut": "2019-07-19",
+    "lastName": "Doe",
+    "firstName": "Jane",
+    "adults": 2,
+    "kids": 0,
+    "crNumber": 4623384187189698
+  },
+  {
+    "room": 9,
+    "checkIn": "2019-12-27",
+    "checkOut": "2020-01-03",
+    "lastName": "Smith",
+    "firstName": "John",
+    "adults": 2,
+    "kids": 2,
+    "crNumber": 4707440189470665
+  },
+  {
+    "room": 3,
+    "checkIn": "2020-02-20",
+    "checkOut": "2020-02-23",
+    "lastName": "Marquiss",
+    "firstName": "Shannon",
+    "adults": 2,
+    "kids": 0,
+    "crNumber": 4335740125406966
+  },
+  {
+    "room": 10,
+    "checkIn": "2019-12-23",
+    "checkOut": "2020-01-07",
+    "lastName": "Wheelock",
+    "firstName": "Emma",
+    "adults": 4,
+    "kids": 0,
+    "crNumber": 4551144291813708
+  }
+]
