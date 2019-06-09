@@ -293,6 +293,7 @@ public class ReservationService {
                     "SELECT room_number, YEAR(check_out) AS y, MONTHNAME(check_out) AS m, SUM(DATEDIFF(check_out, check_in) * price) AS revenue " +
                             "FROM reservation " +
                             "JOIN room ON room_number=room " +
+                            "WHERE canceled<>1 " +
                             "GROUP BY room_number, YEAR(check_out), MONTHNAME(check_out)" +
                             "ORDER BY room_number"
             );
