@@ -133,6 +133,7 @@ public class ReservationService {
         try{
              conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
                     "sec03group01", "group01@sec03");
+             conn.setAutoCommit(false);
             preparedStatement = conn.prepareStatement(
                     "SELECT * FROM room JOIN reservation ON room_number = room AND room = (?) AND canceled = false " +
                             "WHERE (?) >= check_in AND (?) < check_out"
@@ -146,13 +147,19 @@ public class ReservationService {
                 available =  true;
             else
                 available =  false;
+            conn.commit();
 
         }
         catch (Exception e){
-            System.out.println(e.getMessage());
+            try {
+                conn.rollback();
+            }catch(SQLException s){
+                System.out.println(s.getMessage());
+            }
         }
         finally{
             try {
+                conn.setAutoCommit(true);
                 conn.close();
                 resultSet.close();
                 preparedStatement.close();
@@ -173,6 +180,7 @@ public class ReservationService {
         try{
             conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
                     "sec03group01", "group01@sec03");
+            conn.setAutoCommit(false);
             preparedStatement = conn.prepareStatement(
                     "SELECT check_in, check_out FROM room JOIN reservation ON room = room_number AND canceled = false " +
                             "WHERE room_number = (?) AND check_out >= CURDATE() ORDER BY check_in"
@@ -181,9 +189,14 @@ public class ReservationService {
 
             resultSet = preparedStatement.executeQuery();
             reservations = unpackResultSet(resultSet);
+            conn.commit();
         }
         catch (Exception e){
-            System.out.println(e.getMessage());
+            try{
+                conn.rollback();
+            }catch(SQLException s) {
+                System.out.println(s.getMessage());
+            }
         }
         finally{
             try {
@@ -207,6 +220,7 @@ public class ReservationService {
         try{
             conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
                     "sec03group01", "group01@sec03");
+            conn.setAutoCommit(false);
             preparedStatement = conn.prepareStatement(
                     "SELECT * FROM room JOIN reservation ON room = room_number " +
                             "WHERE first_name = (?) AND last_name = (?) ORDER BY check_in"
@@ -216,9 +230,14 @@ public class ReservationService {
 
             resultSet = preparedStatement.executeQuery();
             reservations = unpackResultSetRes(resultSet);
+            conn.commit();
         }
         catch (Exception e){
-            System.out.println(e.getMessage());
+            try{
+                conn.rollback();
+            }catch(SQLException s) {
+                System.out.println(s.getMessage());
+            }
         }
         finally{
             try {
@@ -274,6 +293,7 @@ public class ReservationService {
         try{
             conn = DriverManager.getConnection("jdbc:mysql://csc365.toshikuboi.net:3306/sec03group01",
                     "sec03group01", "group01@sec03");
+            conn.setAutoCommit(false);
             preparedStatement = conn.prepareStatement(
                     "SELECT room_number, YEAR(check_out) AS y, MONTHNAME(check_out) AS m, ROUND(SUM(DATEDIFF(check_out, check_in) * price),0) AS revenue " +
                             "FROM reservation " +
@@ -284,9 +304,14 @@ public class ReservationService {
             );
             resultSet = preparedStatement.executeQuery();
             roomRevenues = unpackRoomRevenueResultSet(resultSet);
+            conn.commit();
         }
         catch (Exception e){
-            e.printStackTrace();
+            try{
+                conn.rollback();
+            }catch(SQLException s) {
+                System.out.println(s.getMessage());
+            }
         }
         finally{
             try {
