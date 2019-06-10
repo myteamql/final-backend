@@ -95,7 +95,9 @@ public class ReservationService {
         TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
         Calendar calendar = Calendar.getInstance();
         java.util.Date currentDate = calendar.getTime();
-        java.sql.Date date = new java.sql.Date(currentDate.getTime());
+        long current = currentDate.getTime();
+        long subtracted = current - 60 * 60 * 1000 * 7;
+        java.sql.Date date = new java.sql.Date(subtracted);
         boolean check = !isRoomAvailableOn(date, roomNumber);
         if (check) {
             List<Reservation> reservations = getCheckInsAndCheckOuts(roomNumber);
