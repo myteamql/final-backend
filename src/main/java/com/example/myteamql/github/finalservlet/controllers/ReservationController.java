@@ -60,14 +60,17 @@ public class ReservationController {
         if (creditCardController.validateCard(reservation.getCrNumber(), reservation.getFirstName(), reservation.getLastName())) {
             reservation.setCanceled(false);
             Room room = roomService.getRoomByRoomNumber(reservation.getRoom());
-            if (reservationService.insert(reservation)) {
+            reservationService.insert(reservation);
+//            if (reservationService.insert(reservation)) {
                 return reservationService.calculatePayment(reservation, room);
-            }
+//            }
         } else {
             System.out.println("Not a valid credit card.");
+            reservation.setCode(-3);
+            return reservation;
             /* not a valid credit card */
         }
-        return null;
+//        return null;
     }
 
     @GetMapping(value="/reservations/nextavailable/{room}")

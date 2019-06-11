@@ -35,19 +35,24 @@ public class ReservationService {
         return reservationRepository.findByCode(code);
     }
 
-    public boolean insert(Reservation reservation) {
+    public Reservation insert(Reservation reservation) {
         // check if max occupants is good
         // check if room is already reserved for those dates
         int roomNum = reservation.getRoom();
         Room room = roomService.getRoomByRoomNumber(roomNum);
         List<Room> availables = roomService.getAllRoomsByAvailability(reservation.getCheckIn(), reservation.getCheckOut(), reservation.getCode());
-        if (room.getMaxOccupants() >= reservation.getAdults() + reservation.getKids() && availables.contains(room)) {
-            reservationRepository.save(reservation);
-            return true;
-        } else {
-            System.out.println("unable to reserve room");
-            return false;
+        if (room.getMaxOccupants() < reservation.getAdults() + reservation.getKids()) {
+            System.out.println("max occupants exceeded");
+            reservation.setCode(-1);
+            return reservation;
         }
+        if (!availables.contains(room)) {
+            System.out.println("room is not available");
+            reservation.setCode(-2);
+            return reservation;
+        }
+        reservationRepository.save(reservation);
+        return reservation;
     }
 
     public Reservation calculatePayment(Reservation reservation, Room room) {
@@ -58,7 +63,6 @@ public class ReservationService {
         newPayment.setReservationCode(reservation.getCode());
         newPayment.setCrNumber(reservation.getCrNumber());
         paymentService.insert(newPayment);
-//        changeNextAvailable(reservation.getRoom());
         return reservation;
     }
 
@@ -77,14 +81,9 @@ public class ReservationService {
         reservation.setCheckOut(checkout);
         reservation.setRoom(room);
         System.out.println(reservation.getCheckIn());
-        if(insert(reservation)) {
-            reservationRepository.save(reservation);
-            return reservation;
-        }
-        else{
-            System.out.println("unable to change reservation");
-            return null;
-        }
+        insert(reservation);
+
+        return reservation;
     }
 
     public List<Reservation> getAllReservations() {
